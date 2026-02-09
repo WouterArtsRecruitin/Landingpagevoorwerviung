@@ -115,6 +115,7 @@ serve(async (req) => {
             : "#",
           categories: { necessary: true, analytics: true, marketing: true },
         },
+        ga4_measurement_id: body.ga4_measurement_id || null,
         form_fields: formFields,
         form_success_message:
           "Bedankt voor je sollicitatie! We nemen binnen enkele werkdagen contact met je op.",

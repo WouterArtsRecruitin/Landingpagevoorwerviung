@@ -32,6 +32,9 @@ export interface IntakeFormData {
   contact_phone: string;
   contact_whatsapp: string;
 
+  // Stap 4: Analytics (bij contact stap)
+  ga4_measurement_id: string;
+
   // Meta
   created_by: string;
 }

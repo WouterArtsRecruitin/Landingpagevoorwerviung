@@ -66,6 +66,7 @@ const EMPTY_FORM: IntakeFormData = {
   contact_email: "",
   contact_phone: "",
   contact_whatsapp: "",
+  ga4_measurement_id: "",
   created_by: "",
 };
 
@@ -256,7 +257,7 @@ export default function IntakeFormPage() {
         </div>
       )}
 
-      {/* Stap 4: Contact */}
+      {/* Stap 4: Contact & Tracking */}
       {step === 4 && (
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Contactpersoon</h3>
@@ -265,6 +266,14 @@ export default function IntakeFormPage() {
           <Field label="E-mail" value={form.contact_email} onChange={(v) => updateField("contact_email", v)} placeholder="jan@bedrijf.nl" type="email" required />
           <Field label="Telefoon" value={form.contact_phone} onChange={(v) => updateField("contact_phone", v)} placeholder="06 12 34 56 78" type="tel" recommended="Voor direct contact met kandidaten" />
           <Field label="WhatsApp nummer" value={form.contact_whatsapp} onChange={(v) => updateField("contact_whatsapp", v)} placeholder="31612345678" helpText="Internationaal formaat zonder + teken" />
+
+          <div className="border-t pt-4 mt-4">
+            <h3 className="text-lg font-semibold">Tracking & Retargeting</h3>
+            <p className="text-xs text-gray-500 mb-3">
+              Voor analytics en retargeting van bezoekers. Je kunt 1 GA4 property gebruiken voor alle pagina's.
+            </p>
+          </div>
+          <Field label="GA4 Measurement ID" value={form.ga4_measurement_id} onChange={(v) => updateField("ga4_measurement_id", v)} placeholder="G-XXXXXXXXXX" helpText="Te vinden in GA4 > Beheer > Datastreams > Measurement ID" />
         </div>
       )}
 
@@ -369,7 +378,7 @@ export default function IntakeFormPage() {
               ]}
             />
             <ReviewSection
-              title="Contact"
+              title="Contact & Tracking"
               stepNr={4}
               onEdit={() => setStep(4)}
               rows={[
@@ -377,6 +386,7 @@ export default function IntakeFormPage() {
                 { label: "E-mail", value: form.contact_email },
                 { label: "Telefoon", value: form.contact_phone || "Niet opgegeven" },
                 { label: "WhatsApp", value: form.contact_whatsapp || "Niet opgegeven" },
+                { label: "GA4 ID", value: form.ga4_measurement_id || "Niet ingesteld" },
               ]}
             />
           </div>
