@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/lib/supabase";
 import type { LandingPageConfig } from "@/types/landing-page";
+import { LOCAL_CONFIGS } from "@/constants/configs";
 
-// In development / demo mode: gebruik lokale demo config
+// Fallback: demo config voor theme defaults
 import { DEMO_CONFIG } from "@/constants/demo-config";
 
 interface LandingPageLoaderProps {
@@ -31,17 +32,19 @@ export function LandingPageLoader({ slug, children }: LandingPageLoaderProps) {
           // Transform DB row naar LandingPageConfig
           setConfig(transformDbRow(data));
         } else {
-          // Fallback naar demo config als slug "demo" is of DB niet beschikbaar
-          if (slug === "demo" || slug === "") {
-            setConfig(DEMO_CONFIG);
+          // Fallback naar lokale config registry
+          const localConfig = LOCAL_CONFIGS[slug];
+          if (localConfig) {
+            setConfig(localConfig);
           } else {
             setError("Vacaturepagina niet gevonden");
           }
         }
       } catch {
-        // Als Supabase niet geconfigureerd is, gebruik demo
-        if (slug === "demo" || slug === "") {
-          setConfig(DEMO_CONFIG);
+        // Als Supabase niet geconfigureerd is, gebruik lokale config
+        const localConfig = LOCAL_CONFIGS[slug];
+        if (localConfig) {
+          setConfig(localConfig);
         } else {
           setError("Er ging iets mis bij het laden");
         }
