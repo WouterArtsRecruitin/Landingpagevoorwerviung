@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTracking } from "@/providers/TrackingProvider";
+import { UI } from "@/constants";
 import type { SectionConfig, SectionType } from "@/types/landing-page";
 
 // Lazy-loaded section registry
@@ -67,7 +68,7 @@ function SectionVisibilityTracker({
           trackSectionView(sectionId);
         }
       },
-      { threshold: 0.3 }
+      { threshold: UI.SECTION_VISIBILITY_THRESHOLD }
     );
 
     observer.observe(ref.current);

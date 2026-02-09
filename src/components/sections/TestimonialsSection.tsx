@@ -1,7 +1,7 @@
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
-import type { TestimonialsSectionData } from "@/types/landing-page";
+import type { TestimonialsSectionData } from "@/types/section-data";
 
 interface Props {
   data: TestimonialsSectionData;

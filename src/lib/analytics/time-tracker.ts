@@ -3,7 +3,9 @@
  * Fire events op 30s, 60s, 120s, 300s
  */
 
-const MILESTONES = [30, 60, 120, 300];
+import { ANALYTICS } from "@/constants";
+
+const MILESTONES = ANALYTICS.TIME_MILESTONES;
 
 export function initTimeTracking(
   callback: (seconds: number) => void

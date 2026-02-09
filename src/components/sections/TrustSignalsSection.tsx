@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { DynamicIcon } from "@/components/shared/DynamicIcon";
-import type { TrustSignalsSectionData } from "@/types/landing-page";
+import type { TrustSignalsSectionData } from "@/types/section-data";
 
 interface Props {
   data: TrustSignalsSectionData;

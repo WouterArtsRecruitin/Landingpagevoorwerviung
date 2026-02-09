@@ -3,6 +3,8 @@ import { Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTracking } from "@/providers/TrackingProvider";
+import { scrollToApplicationForm } from "@/lib/scroll";
+import { UI } from "@/constants";
 
 export function FloatingApplyButton() {
   const { trackCTAClick } = useTracking();
@@ -10,7 +12,7 @@ export function FloatingApplyButton() {
 
   useEffect(() => {
     function onScroll() {
-      setVisible(window.scrollY > 600);
+      setVisible(window.scrollY > UI.FLOATING_BUTTON_SCROLL_PX);
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -18,7 +20,7 @@ export function FloatingApplyButton() {
 
   function handleClick() {
     trackCTAClick("floating_apply_button", "floating");
-    document.getElementById("application-form")?.scrollIntoView({ behavior: "smooth" });
+    scrollToApplicationForm();
   }
 
   return (

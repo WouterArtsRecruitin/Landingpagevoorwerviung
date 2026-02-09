@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useTracking } from "@/providers/TrackingProvider";
-import type { VideoEmbedSectionData } from "@/types/landing-page";
+import type { VideoEmbedSectionData } from "@/types/section-data";
 
 interface Props {
   data: VideoEmbedSectionData;

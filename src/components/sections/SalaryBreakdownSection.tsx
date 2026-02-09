@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { DynamicIcon } from "@/components/shared/DynamicIcon";
-import type { SalaryBreakdownSectionData } from "@/types/landing-page";
+import type { SalaryBreakdownSectionData } from "@/types/section-data";
 
 interface Props {
   data: SalaryBreakdownSectionData;

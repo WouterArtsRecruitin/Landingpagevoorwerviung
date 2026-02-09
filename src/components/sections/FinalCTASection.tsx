@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTracking } from "@/providers/TrackingProvider";
 import { useConfig } from "@/providers/ConfigProvider";
-import type { FinalCTASectionData } from "@/types/landing-page";
+import { scrollToApplicationForm } from "@/lib/scroll";
+import type { FinalCTASectionData } from "@/types/section-data";
 
 const TYPE_ICONS: Record<string, React.ElementType> = {
   apply: ArrowRight,
@@ -29,7 +30,7 @@ export default function FinalCTASection({ data, sectionId, className }: Props) {
 
     switch (option.type) {
       case "apply":
-        document.getElementById("application-form")?.scrollIntoView({ behavior: "smooth" });
+        scrollToApplicationForm();
         break;
       case "whatsapp":
         trackEvent("whatsapp_click", { section: sectionId });

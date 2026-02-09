@@ -4,6 +4,7 @@
  */
 
 import { supabase } from "@/lib/supabase";
+import { ANALYTICS } from "@/constants";
 import type { AnalyticsEventName, EventCategory } from "@/types/analytics";
 
 interface QueuedEvent {
@@ -17,8 +18,8 @@ interface QueuedEvent {
 }
 
 const EVENT_QUEUE: QueuedEvent[] = [];
-const FLUSH_INTERVAL_MS = 5000;
-const MAX_BATCH_SIZE = 20;
+const FLUSH_INTERVAL_MS = ANALYTICS.EVENT_FLUSH_INTERVAL_MS;
+const MAX_BATCH_SIZE = ANALYTICS.EVENT_BATCH_SIZE;
 
 let flushTimer: ReturnType<typeof setInterval> | null = null;
 

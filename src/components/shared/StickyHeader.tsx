@@ -3,6 +3,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useConfig } from "@/providers/ConfigProvider";
 import { useTracking } from "@/providers/TrackingProvider";
+import { scrollToApplicationForm } from "@/lib/scroll";
+import { UI } from "@/constants";
 
 export function StickyHeader() {
   const config = useConfig();
@@ -11,7 +13,7 @@ export function StickyHeader() {
 
   useEffect(() => {
     function onScroll() {
-      setVisible(window.scrollY > 300);
+      setVisible(window.scrollY > UI.STICKY_HEADER_SCROLL_PX);
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -19,7 +21,7 @@ export function StickyHeader() {
 
   function handleCta() {
     trackCTAClick("sticky_header_cta", "header");
-    document.getElementById("application-form")?.scrollIntoView({ behavior: "smooth" });
+    scrollToApplicationForm();
   }
 
   return (

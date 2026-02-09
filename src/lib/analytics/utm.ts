@@ -1,6 +1,7 @@
 import type { UTMParams } from "@/types/analytics";
+import { STORAGE_KEYS } from "@/constants";
 
-const UTM_STORAGE_KEY = "rlf_utm_params";
+const UTM_STORAGE_KEY = STORAGE_KEYS.UTM_PARAMS;
 
 /**
  * Parse UTM parameters uit de huidige URL

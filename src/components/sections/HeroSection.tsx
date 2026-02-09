@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useTracking } from "@/providers/TrackingProvider";
 import { cn } from "@/lib/utils";
-import type { HeroSectionData } from "@/types/landing-page";
+import { scrollToApplicationForm, scrollToSection } from "@/lib/scroll";
+import type { HeroSectionData } from "@/types/section-data";
 
 interface HeroSectionProps {
   data: HeroSectionData;
@@ -18,7 +19,7 @@ export default function HeroSection({ data, sectionId, className }: HeroSectionP
     trackCTAClick(data.primaryCtaLabel, sectionId);
 
     if (data.primaryCtaAction === "scroll_to_form") {
-      document.getElementById("application-form")?.scrollIntoView({ behavior: "smooth" });
+      scrollToApplicationForm();
     } else if (data.primaryCtaAction === "whatsapp" && data.primaryCtaUrl) {
       window.open(data.primaryCtaUrl, "_blank");
     } else if (data.primaryCtaUrl) {
@@ -31,7 +32,7 @@ export default function HeroSection({ data, sectionId, className }: HeroSectionP
       trackCTAClick(data.secondaryCtaLabel, sectionId);
     }
     if (data.secondaryCtaAction === "scroll_to_section" && data.secondaryCtaTarget) {
-      document.getElementById(data.secondaryCtaTarget)?.scrollIntoView({ behavior: "smooth" });
+      scrollToSection(data.secondaryCtaTarget);
     }
   }
 

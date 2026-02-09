@@ -1,6 +1,6 @@
 import { Check, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { RequirementsSectionData } from "@/types/landing-page";
+import type { RequirementsSectionData } from "@/types/section-data";
 
 interface Props {
   data: RequirementsSectionData;

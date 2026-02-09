@@ -3,9 +3,11 @@
  * Track 25%, 50%, 75% en 100% scroll depth
  */
 
+import { ANALYTICS } from "@/constants";
+
 type ScrollCallback = (depth: number) => void;
 
-const THRESHOLDS = [25, 50, 75, 100];
+const THRESHOLDS = ANALYTICS.SCROLL_THRESHOLDS;
 
 export function initScrollTracking(callback: ScrollCallback): () => void {
   const trackedDepths = new Set<number>();

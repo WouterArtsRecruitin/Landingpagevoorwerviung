@@ -16,6 +16,7 @@ import { queueEvent, startEventFlushing, stopEventFlushing } from "@/lib/analyti
 import { initScrollTracking } from "@/lib/analytics/scroll-tracker";
 import { initTimeTracking } from "@/lib/analytics/time-tracker";
 import { getOrCreateAnonymousId, getDeviceType, getBrowserName } from "@/lib/utils";
+import { ANALYTICS } from "@/constants";
 import type { TrackingContextValue, AnalyticsEventName, UTMParams } from "@/types/analytics";
 import type { AnalyticsConfig } from "@/types/landing-page";
 
@@ -170,7 +171,7 @@ export function TrackingProvider({
     trackEvent("form_submit", {});
 
     if (consentGiven.analytics) {
-      sendGA4Event("generate_lead", { currency: "EUR" });
+      sendGA4Event("generate_lead", { currency: ANALYTICS.DEFAULT_CURRENCY });
     }
     if (consentGiven.marketing) {
       trackFBEvent("Lead", {});

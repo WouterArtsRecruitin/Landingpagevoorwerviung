@@ -12,7 +12,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useConfig } from "@/providers/ConfigProvider";
 import { useTracking } from "@/providers/TrackingProvider";
 import { supabase } from "@/lib/supabase";
-import type { ApplicationFormSectionData } from "@/types/landing-page";
+import { SECTION_IDS } from "@/constants";
+import type { ApplicationFormSectionData } from "@/types/section-data";
 
 interface Props {
   data: ApplicationFormSectionData;
@@ -110,7 +111,7 @@ export default function ApplicationFormSection({ data, sectionId, className }: P
 
   if (submitted) {
     return (
-      <section id="application-form" className={cn("py-16 lg:py-24", className)}>
+      <section id={SECTION_IDS.APPLICATION_FORM} className={cn("py-16 lg:py-24", className)}>
         <div className="max-w-2xl mx-auto px-4 text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="h-8 w-8 text-green-600" />
@@ -124,7 +125,7 @@ export default function ApplicationFormSection({ data, sectionId, className }: P
   }
 
   return (
-    <section id="application-form" className={cn("py-16 lg:py-24 bg-muted/30", className)}>
+    <section id={SECTION_IDS.APPLICATION_FORM} className={cn("py-16 lg:py-24 bg-muted/30", className)}>
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">

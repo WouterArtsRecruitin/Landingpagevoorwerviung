@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { STORAGE_KEYS } from "@/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,7 +24,7 @@ export function hashStringToNumber(str: string): number {
  * Genereer of haal een anoniem bezoeker ID op uit localStorage
  */
 export function getOrCreateAnonymousId(): string {
-  const key = "rlf_anonymous_id";
+  const key = STORAGE_KEYS.ANONYMOUS_ID;
   let id = localStorage.getItem(key);
   if (!id) {
     id = crypto.randomUUID();

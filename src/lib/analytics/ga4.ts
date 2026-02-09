@@ -3,6 +3,7 @@
  * Laadt gtag.js en biedt helper functies voor event tracking
  */
 
+
 declare global {
   interface Window {
     dataLayer: Array<Record<string, unknown>>;
@@ -49,19 +50,4 @@ export function sendGA4Event(
 ): void {
   if (!initialized || !window.gtag) return;
   window.gtag("event", eventName, params);
-}
-
-/**
- * Track een conversie (voor Google Ads / GA4)
- */
-export function sendGA4Conversion(
-  eventName: string,
-  value?: number,
-  currency: string = "EUR"
-): void {
-  sendGA4Event(eventName, {
-    value,
-    currency,
-    send_to: "default",
-  });
 }

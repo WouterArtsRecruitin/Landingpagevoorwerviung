@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { DynamicIcon } from "@/components/shared/DynamicIcon";
-import type { DayInLifeSectionData } from "@/types/landing-page";
+import type { DayInLifeSectionData } from "@/types/section-data";
 
 interface Props {
   data: DayInLifeSectionData;

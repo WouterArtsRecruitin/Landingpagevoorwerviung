@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import type { FAQSectionData } from "@/types/landing-page";
+import type { FAQSectionData } from "@/types/section-data";
 
 interface Props {
   data: FAQSectionData;

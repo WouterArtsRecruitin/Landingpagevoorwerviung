@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { WorkGallerySectionData } from "@/types/landing-page";
+import type { WorkGallerySectionData } from "@/types/section-data";
 
 interface Props {
   data: WorkGallerySectionData;

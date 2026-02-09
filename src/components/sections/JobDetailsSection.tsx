@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { DynamicIcon } from "@/components/shared/DynamicIcon";
-import type { JobDetailsSectionData } from "@/types/landing-page";
+import type { JobDetailsSectionData } from "@/types/section-data";
 
 interface Props {
   data: JobDetailsSectionData;

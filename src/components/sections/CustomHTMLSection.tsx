@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { CustomHTMLSectionData } from "@/types/landing-page";
+import type { CustomHTMLSectionData } from "@/types/section-data";
 
 interface Props {
   data: CustomHTMLSectionData;

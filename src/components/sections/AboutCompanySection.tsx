@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { AboutCompanySectionData } from "@/types/landing-page";
+import type { AboutCompanySectionData } from "@/types/section-data";
 
 interface Props {
   data: AboutCompanySectionData;

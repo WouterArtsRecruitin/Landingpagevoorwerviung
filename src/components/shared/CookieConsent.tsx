@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { Cookie, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { STORAGE_KEYS } from "@/constants";
 import type { CookieConsentConfig } from "@/types/landing-page";
 
-const CONSENT_KEY = "rlf_cookie_consent";
+const CONSENT_KEY = STORAGE_KEYS.COOKIE_CONSENT;
 
 export interface ConsentState {
   analytics: boolean;
