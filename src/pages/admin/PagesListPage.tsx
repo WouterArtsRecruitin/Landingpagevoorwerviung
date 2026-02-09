@@ -113,21 +113,6 @@ export default function PagesListPage() {
         </div>
       )}
 
-      {/* Webhook info */}
-      <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
-        <h3 className="text-sm font-semibold text-blue-900 mb-2">
-          Jotform / Typeform koppeling
-        </h3>
-        <p className="text-xs text-blue-700 mb-2">
-          Koppel je Jotform of Typeform formulier aan de webhook URL om automatisch pagina's te genereren:
-        </p>
-        <code className="text-xs bg-blue-100 px-2 py-1 rounded block">
-          POST {window.location.origin}/functions/v1/generate-landing-page
-        </code>
-        <p className="text-xs text-blue-600 mt-2">
-          Zie de documentatie voor de veldmapping per formulier-provider.
-        </p>
-      </div>
     </div>
   );
 }
