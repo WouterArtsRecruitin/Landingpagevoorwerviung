@@ -141,17 +141,44 @@ export default function ApplicationFormSection({ data, sectionId, className }: P
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               {config.formFields.map((field) => {
                 if (field.type === "checkbox") {
+                  const hasError = !!form.formState.errors[field.name];
+                  const isPrivacy = field.name === "privacy" || field.label.toLowerCase().includes("privacy");
                   return (
-                    <div key={field.name} className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        id={field.name}
-                        className="mt-1 h-4 w-4 rounded border-gray-300"
-                        {...form.register(field.name)}
-                      />
-                      <Label htmlFor={field.name} className="text-sm text-muted-foreground font-normal cursor-pointer">
-                        {field.label}
-                      </Label>
+                    <div key={field.name}>
+                      <div className={cn(
+                        "flex items-start gap-3 p-3 rounded-lg border",
+                        hasError ? "border-red-300 bg-red-50" : "border-transparent"
+                      )}>
+                        <input
+                          type="checkbox"
+                          id={field.name}
+                          className="mt-1 h-4 w-4 rounded border-gray-300 accent-primary"
+                          {...form.register(field.name)}
+                        />
+                        <div>
+                          <Label htmlFor={field.name} className="text-sm text-muted-foreground font-normal cursor-pointer">
+                            {field.label}
+                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                          </Label>
+                          {isPrivacy && config.cookieConsent.privacyPolicyUrl && config.cookieConsent.privacyPolicyUrl !== "#" && (
+                            <a
+                              href={config.cookieConsent.privacyPolicyUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block text-xs text-primary hover:underline mt-1"
+                            >
+                              Lees de privacyverklaring
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                      {hasError && (
+                        <p className="text-sm text-red-500 mt-1 ml-3">
+                          {isPrivacy
+                            ? "Je moet akkoord gaan met de privacyverklaring om te solliciteren"
+                            : "Dit veld is verplicht"}
+                        </p>
+                      )}
                     </div>
                   );
                 }
@@ -244,6 +271,14 @@ export default function ApplicationFormSection({ data, sectionId, className }: P
                   </div>
                 );
               })}
+
+              {/* Privacy waarschuwing als niet aangevinkt */}
+              {config.formFields.some((f) => f.name === "privacy" && f.required) &&
+                !form.watch("privacy") && (
+                <p className="text-xs text-amber-600 bg-amber-50 rounded-lg p-3 text-center">
+                  Vink de privacyverklaring aan om je sollicitatie te versturen
+                </p>
+              )}
 
               <Button type="submit" size="xl" className="w-full" disabled={uploading}>
                 {uploading ? (

@@ -30,6 +30,14 @@ serve(async (req) => {
       );
     }
 
+    // Privacy consent is verplicht - zonder akkoord geen verwerking
+    if (!body.privacy_consent) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Akkoord met privacyverklaring is vereist om te solliciteren" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Insert application
     const { data: application, error: insertError } = await supabase
       .from("applications")
