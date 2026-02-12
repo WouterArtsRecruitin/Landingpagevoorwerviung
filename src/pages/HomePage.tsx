@@ -12,7 +12,7 @@ const TEMPLATES = [
     color: '#3B82F6',
     gradient: 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)',
     description: 'Professional blauw voor engineering professionals',
-    demoUrl: '/v/asml-mechanical-engineer',
+    demoUrl: '/v/asml-mechanical-engineer-1',
     demoCompany: 'ASML'
   },
   {
@@ -23,7 +23,7 @@ const TEMPLATES = [
     color: '#6366F1',
     gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     description: 'Modern purple voor software developers & IT',
-    demoUrl: '/v/exact-senior-full-stack-developer',
+    demoUrl: '/v/exact-senior-full-stack-developer-1',
     demoCompany: 'Exact'
   },
   {
@@ -34,7 +34,7 @@ const TEMPLATES = [
     color: '#F97316',
     gradient: 'linear-gradient(135deg, #4B5563 0%, #F97316 100%)',
     description: 'Stoer grijs/oranje voor productie & metaalbewerking',
-    demoUrl: '/v/vdl-groep-cnc-draaier',
+    demoUrl: '/v/vdl-groep-cnc-draaier-1',
     demoCompany: 'VDL Groep'
   },
   {
@@ -45,7 +45,7 @@ const TEMPLATES = [
     color: '#DC2626',
     gradient: 'linear-gradient(135deg, #DC2626 0%, #7F1D1D 100%)',
     description: 'Actie rood voor service monteurs & technici',
-    demoUrl: '/v/mitsubishi-electric-servicemonteur-koeltechniek',
+    demoUrl: '/v/mitsubishi-electric-servicemonteur-koeltechniek-1',
     demoCompany: 'Mitsubishi'
   },
   {
@@ -56,7 +56,7 @@ const TEMPLATES = [
     color: '#10B981',
     gradient: 'linear-gradient(135deg, #10B981 0%, #047857 100%)',
     description: 'Helder groen voor logistiek & transport',
-    demoUrl: '/v/bolcom-warehouse-teamlead',
+    demoUrl: '/v/bolcom-warehouse-teamlead-1',
     demoCompany: 'Bol.com'
   },
   {
@@ -67,7 +67,7 @@ const TEMPLATES = [
     color: '#D97706',
     gradient: 'linear-gradient(135deg, #1F2937 0%, #D97706 100%)',
     description: 'Luxe zwart/goud voor senior posities',
-    demoUrl: '/v/philips-engineering-manager',
+    demoUrl: '/v/philips-engineering-manager-1',
     demoCompany: 'Philips'
   },
 ];
