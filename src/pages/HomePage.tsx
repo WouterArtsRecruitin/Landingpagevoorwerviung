@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import FAQSection from '@/components/FAQSection';
+import VideoSection from '@/components/VideoSection';
 
 const TEMPLATES = [
   {
@@ -201,6 +203,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Video Tutorial */}
+      <VideoSection />
+
       {/* Templates Showcase */}
       <section className="container mx-auto px-4 sm:px-6 py-20 sm:py-32">
         <div className="max-w-6xl mx-auto">
@@ -326,6 +331,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* FAQ */}
+      <FAQSection />
 
       {/* CTA */}
       <section className="container mx-auto px-4 sm:px-6 py-20 sm:py-32">
