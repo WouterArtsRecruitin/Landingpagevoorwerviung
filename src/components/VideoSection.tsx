@@ -32,14 +32,14 @@ export default function VideoSection() {
                   target.style.display = 'none';
                   const parent = target.parentElement;
                   if (parent) {
-                    parent.innerHTML = '<div class="flex items-center justify-center h-full bg-gray-100"><div class="text-center p-8"><p class="text-gray-600 mb-4">⚠️ Video kan niet geladen worden</p><a href="/videos/mtee-complete-part1-1405.webm" download class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Download video</a></div></div>';
+                    parent.innerHTML = '<div class="flex items-center justify-center h-full bg-gray-100"><div class="text-center p-8"><p class="text-gray-600 mb-4">⚠️ Video kan niet geladen worden</p><a href="/videos/mtee-complete-part2-1405.webm" download class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Download video</a></div></div>';
                   }
                 }}
               >
-                <source src="/videos/mtee-complete-part1-1405.webm" type="video/webm" />
+                <source src="/videos/mtee-complete-part2-1405.webm" type="video/webm" />
                 <p className="text-center p-8">
                   Je browser ondersteunt geen video playback.
-                  <a href="/videos/mtee-complete-part1-1405.webm" download className="text-blue-600 underline ml-2">
+                  <a href="/videos/mtee-complete-part2-1405.webm" download className="text-blue-600 underline ml-2">
                     Download de video
                   </a>
                 </p>
@@ -95,14 +95,14 @@ export default function VideoSection() {
                   target.style.display = 'none';
                   const parent = target.parentElement;
                   if (parent) {
-                    parent.innerHTML = '<div class="flex items-center justify-center h-full bg-gray-100"><div class="text-center p-8"><p class="text-gray-600 mb-4">⚠️ Video kan niet geladen worden</p><a href="/videos/mtee-complete-part2-1405.webm" download class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Download video</a></div></div>';
+                    parent.innerHTML = '<div class="flex items-center justify-center h-full bg-gray-100"><div class="text-center p-8"><p class="text-gray-600 mb-4">⚠️ Video kan niet geladen worden</p><a href="/videos/mtee-complete-part1-1405.webm" download class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Download video</a></div></div>';
                   }
                 }}
               >
-                <source src="/videos/mtee-complete-part2-1405.webm" type="video/webm" />
+                <source src="/videos/mtee-complete-part1-1405.webm" type="video/webm" />
                 <p className="text-center p-8">
                   Je browser ondersteunt geen video playback.
-                  <a href="/videos/mtee-complete-part2-1405.webm" download className="text-blue-600 underline ml-2">
+                  <a href="/videos/mtee-complete-part1-1405.webm" download className="text-blue-600 underline ml-2">
                     Download de video
                   </a>
                 </p>
