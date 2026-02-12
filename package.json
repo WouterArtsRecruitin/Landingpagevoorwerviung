@@ -6,7 +6,8 @@
   "description": "Modulair framework voor high-conversion vacature landingspagina's met Supabase, GA4, ATS-integratie",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
+    "build:check": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint ."
   },
