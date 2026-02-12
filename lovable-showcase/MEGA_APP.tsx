@@ -217,11 +217,14 @@ function Hero() {
 
 function TemplateGallery() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
     alert(`Je koos: ${TEMPLATES.find(t => t.id === id)?.name}`);
   };
+
+  const templatesToShow = showAll ? TEMPLATES : TEMPLATES.slice(0, 2);
 
   return (
     <div id="templates" className="container mx-auto px-4 py-20">
@@ -237,7 +240,7 @@ function TemplateGallery() {
 
       {/* Template Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-        {TEMPLATES.map(template => (
+        {templatesToShow.map(template => (
           <TemplateCard
             key={template.id}
             template={template}
@@ -245,6 +248,18 @@ function TemplateGallery() {
           />
         ))}
       </div>
+
+      {/* Show More Button */}
+      {!showAll && (
+        <div className="text-center mb-16">
+          <button
+            onClick={() => setShowAll(true)}
+            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-xl hover:scale-105 transition-all font-bold text-lg"
+          >
+            Toon meer templates ({TEMPLATES.length - 2} meer)
+          </button>
+        </div>
+      )}
 
       {/* CTA Section */}
       <div className="mt-20 text-center bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl p-12 sm:p-16 text-white shadow-2xl">

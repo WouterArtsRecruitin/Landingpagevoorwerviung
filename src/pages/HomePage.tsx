@@ -1,6 +1,67 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+
+const TEMPLATES = [
+  {
+    id: 'engineering',
+    name: 'Engineering',
+    emoji: '🔵',
+    sector: 'Techniek & Industrie',
+    color: '#3B82F6',
+    gradient: 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)',
+    description: 'Professional blauw voor engineering professionals',
+  },
+  {
+    id: 'tech',
+    name: 'Tech & Software',
+    emoji: '🟣',
+    sector: 'ICT & Telecom',
+    color: '#6366F1',
+    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    description: 'Modern purple voor software developers & IT',
+  },
+  {
+    id: 'industrial',
+    name: 'Industrie',
+    emoji: '⚙️',
+    sector: 'Productie & Metaal',
+    color: '#F97316',
+    gradient: 'linear-gradient(135deg, #4B5563 0%, #F97316 100%)',
+    description: 'Stoer grijs/oranje voor productie & metaalbewerking',
+  },
+  {
+    id: 'service',
+    name: 'Service & Montage',
+    emoji: '🔧',
+    sector: 'Technische Dienst',
+    color: '#DC2626',
+    gradient: 'linear-gradient(135deg, #DC2626 0%, #7F1D1D 100%)',
+    description: 'Actie rood voor service monteurs & technici',
+  },
+  {
+    id: 'logistics',
+    name: 'Logistiek',
+    emoji: '🚚',
+    sector: 'Transport & Distributie',
+    color: '#10B981',
+    gradient: 'linear-gradient(135deg, #10B981 0%, #047857 100%)',
+    description: 'Helder groen voor logistiek & transport',
+  },
+  {
+    id: 'premium',
+    name: 'Premium',
+    emoji: '⭐',
+    sector: 'Management & Executive',
+    color: '#D97706',
+    gradient: 'linear-gradient(135deg, #1F2937 0%, #D97706 100%)',
+    description: 'Luxe zwart/goud voor senior posities',
+  },
+];
 
 export default function HomePage() {
+  const [showAllTemplates, setShowAllTemplates] = useState(false);
+  const templatesToShow = showAllTemplates ? TEMPLATES : TEMPLATES.slice(0, 2);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Navigation */}
@@ -125,6 +186,81 @@ export default function HomePage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Templates Showcase */}
+      <section className="container mx-auto px-4 sm:px-6 py-20 sm:py-32">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+              6 Templates voor Tech & Industrie
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Elk template heeft een uniek kleurenschema en visuele identiteit.
+              Kies wat past bij jouw vacature.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            {templatesToShow.map(template => (
+              <div
+                key={template.id}
+                className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all overflow-hidden border border-gray-100"
+              >
+                <div
+                  className="h-48 flex items-center justify-center text-white relative overflow-hidden"
+                  style={{ background: template.gradient }}
+                >
+                  <div className="text-8xl opacity-50">{template.emoji}</div>
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="text-center px-4">
+                      <div className="text-white font-bold text-lg mb-2">Bekijk Preview</div>
+                      <div className="text-white/80 text-sm">Klik voor details</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
+                      {template.sector}
+                    </span>
+                    <div
+                      className="w-6 h-6 rounded-full border-2 border-white shadow"
+                      style={{ background: template.color }}
+                    ></div>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {template.emoji} {template.name}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    {template.description}
+                  </p>
+
+                  <Link
+                    to="/admin/nieuw"
+                    className="block w-full py-3 rounded-lg font-semibold text-white text-center transition-all hover:scale-105 shadow"
+                    style={{ background: template.gradient }}
+                  >
+                    Gebruik Template →
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {!showAllTemplates && (
+            <div className="text-center">
+              <button
+                onClick={() => setShowAllTemplates(true)}
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-xl hover:scale-105 transition-all font-bold text-lg"
+              >
+                Toon meer templates ({TEMPLATES.length - 2} meer)
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
