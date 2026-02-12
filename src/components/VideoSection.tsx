@@ -23,11 +23,26 @@ export default function VideoSection() {
             <div className="aspect-video bg-black relative group">
               <video
                 controls
-                className="w-full h-full object-contain"
-                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%233B82F6' width='16' height='9'/%3E%3C/svg%3E"
+                preload="metadata"
+                className="w-full h-full object-contain bg-gray-900"
+                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%233B82F6' width='16' height='9'/%3E%3Ctext x='50%25' y='50%25' fill='white' text-anchor='middle' dy='.3em' font-size='2'%3EDeel 1%3C/text%3E%3C/svg%3E"
+                onError={(e) => {
+                  console.error('Video load error:', e);
+                  const target = e.target as HTMLVideoElement;
+                  target.style.display = 'none';
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.innerHTML = '<div class="flex items-center justify-center h-full bg-gray-100"><div class="text-center p-8"><p class="text-gray-600 mb-4">⚠️ Video kan niet geladen worden</p><a href="/videos/mtee-complete-part1-1405.webm" download class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Download video</a></div></div>';
+                  }
+                }}
               >
                 <source src="/videos/mtee-complete-part1-1405.webm" type="video/webm" />
-                Je browser ondersteunt geen video playback.
+                <p className="text-center p-8">
+                  Je browser ondersteunt geen video playback.
+                  <a href="/videos/mtee-complete-part1-1405.webm" download className="text-blue-600 underline ml-2">
+                    Download de video
+                  </a>
+                </p>
               </video>
               <div className="absolute top-4 left-4 pointer-events-none">
                 <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium">
@@ -71,12 +86,27 @@ export default function VideoSection() {
             <div className="aspect-video bg-black relative group">
               <video
                 controls
-                className="w-full h-full object-contain"
-                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%236366F1' width='16' height='9'/%3E%3C/svg%3E"
+                preload="metadata"
+                className="w-full h-full object-contain bg-gray-900"
+                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%236366F1' width='16' height='9'/%3E%3Ctext x='50%25' y='50%25' fill='white' text-anchor='middle' dy='.3em' font-size='2'%3EDeel 2%3C/text%3E%3C/svg%3E"
+                onError={(e) => {
+                  console.error('Video load error:', e);
+                  const target = e.target as HTMLVideoElement;
+                  target.style.display = 'none';
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.innerHTML = '<div class="flex items-center justify-center h-full bg-gray-100"><div class="text-center p-8"><p class="text-gray-600 mb-4">⚠️ Video kan niet geladen worden</p><a href="/videos/mtee-complete-part2-1405.webm" download class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Download video</a></div></div>';
+                  }
+                }}
               >
                 <source src="/videos/mtee-complete-part2-1405.webm" type="video/webm" />
-                Je browser ondersteunt geen video playback.
-              </source>
+                <p className="text-center p-8">
+                  Je browser ondersteunt geen video playback.
+                  <a href="/videos/mtee-complete-part2-1405.webm" download className="text-blue-600 underline ml-2">
+                    Download de video
+                  </a>
+                </p>
+              </video>
               <div className="absolute top-4 left-4 pointer-events-none">
                 <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium">
                   Deel 2: Resultaat
