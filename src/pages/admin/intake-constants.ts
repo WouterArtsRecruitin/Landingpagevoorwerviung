@@ -87,7 +87,10 @@ export function getMissingRecommended(form: IntakeFormData) {
 
 export function getValidationErrors(form: IntakeFormData): string[] {
   const errors: string[] = [];
-  if (form.contact_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.contact_email)) {
+  // More permissive email validation with trim
+  const email = form.contact_email?.trim();
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    console.error('Email validation failed for:', email, 'length:', email.length);
     errors.push("E-mailadres contactpersoon is ongeldig");
   }
   if (form.salary_min && form.salary_max && form.salary_min > form.salary_max) {

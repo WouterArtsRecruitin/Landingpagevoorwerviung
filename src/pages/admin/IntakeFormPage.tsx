@@ -108,6 +108,19 @@ export default function IntakeFormPage() {
         ))}
       </div>
 
+      {/* Sticky submit button - alleen op stap 5 */}
+      {step === 5 && canSubmit && (
+        <div className="sticky top-0 z-50 bg-white border-b shadow-md py-4 mb-6 -mx-6 px-6">
+          <button
+            onClick={handleSubmit}
+            disabled={submitting}
+            className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+          >
+            {submitting ? "⏳ Bezig met genereren..." : "✨ Genereer landingspagina"}
+          </button>
+        </div>
+      )}
+
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
           <p className="text-sm text-red-700">{error}</p>

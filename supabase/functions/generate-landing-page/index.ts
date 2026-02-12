@@ -41,6 +41,9 @@ serve(async (req) => {
         company_logo_url: body.company_logo_url,
         company_sector: body.company_sector,
         primary_color: body.primary_color,
+        template_style: body.template_style || "auto",
+        image_style: body.image_style || "photos",
+        calendly_url: body.calendly_url || null,
         job_title: body.job_title,
         job_location: body.job_location,
         salary_min: body.salary_min,
@@ -143,9 +146,11 @@ serve(async (req) => {
       message: "Landingspagina is aangemaakt als concept. Publiceer via het dashboard.",
     });
   } catch (error) {
+    console.error("Edge Function error:", error);
     return jsonResponse(500, {
       success: false,
       error: "Er ging iets mis bij het genereren van de pagina",
+      details: error.message || String(error),
     });
   }
 });

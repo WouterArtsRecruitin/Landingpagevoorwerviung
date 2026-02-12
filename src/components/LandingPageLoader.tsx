@@ -21,17 +21,24 @@ export function LandingPageLoader({ slug, children }: LandingPageLoaderProps) {
     async function loadConfig() {
       try {
         // Probeer eerst van Supabase te laden
+        // Laad ALLE pages ongeacht status (voor testing/preview)
+        console.log('🔍 Loading page with slug:', slug);
         const { data, error: dbError } = await supabase
           .from("landing_pages")
           .select("*")
           .eq("slug", slug)
-          .eq("status", "published")
           .single();
 
+        console.log('📊 Supabase result:', { data: !!data, error: dbError });
+
         if (data && !dbError) {
+          console.log('✅ Page found, transforming data...');
           // Transform DB row naar LandingPageConfig
           setConfig(transformDbRow(data));
         } else {
+          console.error('⚠️ No data or error!');
+          console.error('Error details:', JSON.stringify(dbError, null, 2));
+          console.error('Data:', data);
           // Fallback naar lokale config registry
           const localConfig = LOCAL_CONFIGS[slug];
           if (localConfig) {
