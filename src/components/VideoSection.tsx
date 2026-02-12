@@ -20,22 +20,18 @@ export default function VideoSection() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Video 1: Intake Form */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
-            <div className="aspect-video bg-gradient-to-br from-blue-500 to-purple-600 relative group cursor-pointer">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                  <svg className="w-8 h-8 text-blue-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                  </svg>
-                </div>
-              </div>
-              <div className="absolute top-4 left-4">
+            <div className="aspect-video bg-black relative group">
+              <video
+                controls
+                className="w-full h-full object-contain"
+                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%233B82F6' width='16' height='9'/%3E%3C/svg%3E"
+              >
+                <source src="/videos/mtee-complete-part1-1405.webm" type="video/webm" />
+                Je browser ondersteunt geen video playback.
+              </video>
+              <div className="absolute top-4 left-4 pointer-events-none">
                 <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium">
                   Deel 1: Intake Form
-                </span>
-              </div>
-              <div className="absolute bottom-4 right-4">
-                <span className="px-3 py-1 bg-black/50 backdrop-blur-sm text-white rounded-full text-xs font-medium">
-                  2:30 min
                 </span>
               </div>
             </div>
@@ -72,22 +68,18 @@ export default function VideoSection() {
 
           {/* Video 2: Landing Page Result */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
-            <div className="aspect-video bg-gradient-to-br from-purple-500 to-pink-600 relative group cursor-pointer">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                  <svg className="w-8 h-8 text-purple-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                  </svg>
-                </div>
-              </div>
-              <div className="absolute top-4 left-4">
+            <div className="aspect-video bg-black relative group">
+              <video
+                controls
+                className="w-full h-full object-contain"
+                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%236366F1' width='16' height='9'/%3E%3C/svg%3E"
+              >
+                <source src="/videos/mtee-complete-part2-1405.webm" type="video/webm" />
+                Je browser ondersteunt geen video playback.
+              </source>
+              <div className="absolute top-4 left-4 pointer-events-none">
                 <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium">
                   Deel 2: Resultaat
-                </span>
-              </div>
-              <div className="absolute bottom-4 right-4">
-                <span className="px-3 py-1 bg-black/50 backdrop-blur-sm text-white rounded-full text-xs font-medium">
-                  3:00 min
                 </span>
               </div>
             </div>
@@ -124,26 +116,16 @@ export default function VideoSection() {
         </div>
 
         {/* CTA below videos */}
-        <div className="mt-12 text-center bg-blue-50 rounded-2xl p-8">
+        <div className="mt-12 text-center bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100">
           <p className="text-gray-600 mb-4">
             <strong>Pro tip:</strong> Bekijk de video's voordat je begint, zo ben je in 5 minuten klaar! 🚀
           </p>
           <a
             href="/admin/nieuw"
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+            className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all font-semibold"
           >
             Zelf proberen →
           </a>
-        </div>
-
-        {/* Note for development */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            📹 Videos worden geladen vanaf: <code className="bg-gray-100 px-2 py-1 rounded text-xs">/videos/mtee-complete-*.webm</code>
-          </p>
-          <p className="text-xs text-gray-400 mt-2">
-            Tip: Upload videos naar YouTube/Loom voor betere performance en voeg embed code toe
-          </p>
         </div>
       </div>
     </section>
