@@ -10,6 +10,9 @@ export interface IntakeFormData {
   company_logo_url: string;
   company_sector: string;
   primary_color: string;
+  template_style?: string;
+  image_style?: string;
+  calendly_url?: string;
 
   // Stap 2: Vacature
   job_title: string;

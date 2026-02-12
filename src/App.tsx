@@ -1,6 +1,8 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
+import ApprovalPage from "@/pages/ApprovalPage";
+import HomePage from "@/pages/HomePage";
 
 // Admin pages (lazy loaded)
 const AdminLayout = lazy(() => import("@/pages/admin/AdminLayout"));
@@ -51,8 +53,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Home page */}
+        <Route path="/" element={<HomePage />} />
+
         {/* Landing page route: /v/{slug} */}
         <Route path="/v/:slug" element={<LandingPage />} />
+
+        {/* Client approval route */}
+        <Route path="/approve/:token" element={<ApprovalPage />} />
 
         {/* Admin routes */}
         <Route
@@ -70,9 +78,6 @@ export default function App() {
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="avg" element={<GdprPage />} />
         </Route>
-
-        {/* Root redirect naar admin dashboard */}
-        <Route path="/" element={<Navigate to="/admin" replace />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

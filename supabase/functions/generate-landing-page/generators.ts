@@ -144,26 +144,121 @@ export function generateSections(body: Record<string, unknown>): Record<string, 
   return sections;
 }
 
+// Vette moderne kleurenschema's voor tech & industrie recruitment
+const COLOR_THEMES = {
+  engineering: {
+    primary: "#3B82F6", // Professional blue
+    secondary: "#2563EB", // Deep blue
+    accent: "#60A5FA", // Light blue
+    gradient: "linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)",
+  },
+  tech: {
+    primary: "#6366F1", // Indigo
+    secondary: "#8B5CF6", // Purple
+    accent: "#EC4899", // Pink
+    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  },
+  industrial: {
+    primary: "#6B7280", // Stoer grijs
+    secondary: "#F97316", // Oranje
+    accent: "#FB923C", // Light orange
+    gradient: "linear-gradient(135deg, #4B5563 0%, #F97316 100%)",
+  },
+  service: {
+    primary: "#DC2626", // Actie rood
+    secondary: "#991B1B", // Dark red
+    accent: "#F87171", // Light red
+    gradient: "linear-gradient(135deg, #DC2626 0%, #7F1D1D 100%)",
+  },
+  logistics: {
+    primary: "#10B981", // Helder groen
+    secondary: "#059669", // Green
+    accent: "#34D399", // Light green
+    gradient: "linear-gradient(135deg, #10B981 0%, #047857 100%)",
+  },
+  premium: {
+    primary: "#1F2937", // Luxe zwart
+    secondary: "#D97706", // Goud
+    accent: "#FBBF24", // Light gold
+    gradient: "linear-gradient(135deg, #1F2937 0%, #D97706 100%)",
+  },
+  default: {
+    primary: "#3B82F6", // Blue (default = engineering)
+    secondary: "#2563EB",
+    accent: "#60A5FA",
+    gradient: "linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)",
+  },
+};
+
+function selectTheme(
+  templateStyle?: string,
+  sector?: string,
+  primaryColor?: string
+): typeof COLOR_THEMES.default {
+  // 1. Als er een expliciete template style is gekozen, gebruik die
+  if (templateStyle && templateStyle !== 'auto' && COLOR_THEMES[templateStyle as keyof typeof COLOR_THEMES]) {
+    return COLOR_THEMES[templateStyle as keyof typeof COLOR_THEMES];
+  }
+
+  // 2. Als er een custom kleur is, gebruik die
+  if (primaryColor && primaryColor !== '#003DA5') {
+    return {
+      primary: primaryColor,
+      secondary: primaryColor,
+      accent: primaryColor,
+      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}dd 100%)`,
+    };
+  }
+
+  // 3. Kies theme op basis van sector (tech & industrie focused)
+  const sectorMap: Record<string, keyof typeof COLOR_THEMES> = {
+    'ICT & Telecom': 'tech',
+    'Techniek & Industrie': 'engineering',
+    'Bouw & Vastgoed': 'industrial',
+    'Logistiek & Transport': 'logistics',
+    'Agrarisch & Groen': 'service',
+    'Horeca & Toerisme': 'premium',
+    'Retail & E-commerce': 'logistics',
+    'Finance & Accounting': 'premium',
+    'Marketing & Communicatie': 'tech',
+    'Onderwijs & Overheid': 'engineering',
+    'Zorg & Welzijn': 'service',
+    'Overig': 'engineering',
+  };
+
+  const themeKey = sector ? sectorMap[sector] || 'default' : 'default';
+  return COLOR_THEMES[themeKey];
+}
+
 export function generateTheme(body: Record<string, unknown>): Record<string, unknown> {
-  const primary = (body.primary_color as string) || "#003DA5";
+  const templateStyle = body.template_style as string | undefined;
+  const sector = body.company_sector as string | undefined;
+  const customColor = body.primary_color as string | undefined;
+  const imageStyle = body.image_style as string | undefined;
+  const calendlyUrl = body.calendly_url as string | undefined;
+
+  const theme = selectTheme(templateStyle, sector, customColor);
 
   return {
     colors: {
-      primary,
-      secondary: "#1A1A2E",
-      accent: "#F0F4F8",
+      primary: theme.primary,
+      secondary: theme.secondary,
+      accent: theme.accent,
       background: "#FFFFFF",
       foreground: "#0F172A",
-      muted: "#F1F5F9",
+      muted: "#F8FAFC",
       mutedForeground: "#64748B",
+      gradient: theme.gradient,
     },
     fonts: {
       heading: "'Inter', sans-serif",
       body: "'Inter', sans-serif",
     },
-    borderRadius: "0.75rem",
+    borderRadius: "1rem",
     logoUrl: (body.company_logo_url as string) || "",
     logoAlt: body.company_name as string,
+    imageStyle: imageStyle || "photos",
+    calendlyUrl: calendlyUrl || "",
   };
 }
 

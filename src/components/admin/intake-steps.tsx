@@ -24,6 +24,46 @@ export function StepBedrijf({ form, updateField }: StepProps) {
           <input type="text" value={form.primary_color} onChange={(e) => updateField("primary_color", e.target.value)} className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm" />
         </div>
       </div>
+
+      {/* Template Selection */}
+      <SelectField
+        label="Template Stijl"
+        value={form.template_style || "auto"}
+        onChange={(v) => updateField("template_style", v)}
+        options={[
+          { value: "auto", label: "🎨 Automatisch (op basis van functie)" },
+          { value: "engineering", label: "🔵 Engineering - Professional blauw" },
+          { value: "tech", label: "🟣 Tech/Software - Modern purple" },
+          { value: "industrial", label: "⚙️ Industrie - Stoer grijs/oranje" },
+          { value: "service", label: "🔧 Service & Montage - Actie rood" },
+          { value: "logistics", label: "🚚 Logistiek - Helder groen" },
+          { value: "premium", label: "⭐ Premium - Luxe goud/zwart" },
+        ]}
+        helpText="Voor tech & industrie recruitment"
+      />
+
+      {/* Image Style */}
+      <SelectField
+        label="Afbeeldingen Stijl"
+        value={form.image_style || "photos"}
+        onChange={(v) => updateField("image_style", v)}
+        options={[
+          { value: "photos", label: "📸 Foto's (realistisch)" },
+          { value: "illustrations", label: "🎨 Illustraties (modern)" },
+          { value: "3d", label: "🎮 3D renders (futuristisch)" },
+          { value: "minimal", label: "⚪ Minimaal (alleen iconen)" },
+        ]}
+        helpText="Welke visuele stijl past bij je merk?"
+      />
+
+      {/* Calendly Integration */}
+      <Field
+        label="Calendly Link (optioneel)"
+        value={form.calendly_url}
+        onChange={(v) => updateField("calendly_url", v)}
+        placeholder="https://calendly.com/jouw-username/30min"
+        helpText="Voor directe afspraak scheduling op de pagina"
+      />
     </div>
   );
 }

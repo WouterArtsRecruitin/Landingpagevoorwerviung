@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { ShareWithClientButton } from "@/components/admin/ShareWithClientButton";
 
 interface PageRow {
   id: string;
@@ -69,50 +70,90 @@ export default function PagesListPage() {
       ) : (
         <div className="bg-white rounded-lg border divide-y">
           {pages.map((page) => (
-            <div key={page.id} className="p-4 flex items-center justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {page.page_title}
-                </p>
-                <div className="flex items-center gap-3 mt-1">
-                  <span className="text-xs text-gray-500 font-mono">/v/{page.slug}</span>
-                  {page.contact_person_name && (
-                    <span className="text-xs text-gray-400">{page.contact_person_name}</span>
-                  )}
-                  <span className="text-xs text-gray-400">
-                    {new Date(page.created_at).toLocaleDateString("nl-NL")}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <StatusBadge status={page.status} />
-
-                <select
-                  value={page.status}
-                  onChange={(e) => updateStatus(page.id, e.target.value)}
-                  className="text-xs border border-gray-200 rounded px-2 py-1"
-                >
-                  <option value="draft">Concept</option>
-                  <option value="published">Publiceren</option>
-                  <option value="paused">Pauzeren</option>
-                  <option value="archived">Archiveren</option>
-                </select>
-
-                <a
-                  href={`/v/${page.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-blue-600 hover:underline px-2"
-                >
-                  Bekijk
-                </a>
-              </div>
-            </div>
+            <PageRow
+              key={page.id}
+              page={page}
+              onStatusUpdate={updateStatus}
+              onShared={loadPages}
+            />
           ))}
         </div>
       )}
 
+    </div>
+  );
+}
+
+function PageRow({
+  page,
+  onStatusUpdate,
+  onShared,
+}: {
+  page: PageRow;
+  onStatusUpdate: (id: string, status: string) => void;
+  onShared: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="p-4">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-gray-900 truncate">
+            {page.page_title}
+          </p>
+          <div className="flex items-center gap-3 mt-1">
+            <span className="text-xs text-gray-500 font-mono">/v/{page.slug}</span>
+            {page.contact_person_name && (
+              <span className="text-xs text-gray-400">{page.contact_person_name}</span>
+            )}
+            <span className="text-xs text-gray-400">
+              {new Date(page.created_at).toLocaleDateString("nl-NL")}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <StatusBadge status={page.status} />
+
+          <select
+            value={page.status}
+            onChange={(e) => onStatusUpdate(page.id, e.target.value)}
+            className="text-xs border border-gray-200 rounded px-2 py-1"
+          >
+            <option value="draft">Concept</option>
+            <option value="published">Publiceren</option>
+            <option value="paused">Pauzeren</option>
+            <option value="archived">Archiveren</option>
+          </select>
+
+          <a
+            href={`/v/${page.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-blue-600 hover:underline px-2"
+          >
+            Bekijk
+          </a>
+
+          {page.status === 'draft' && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="text-xs px-3 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors font-medium"
+            >
+              {expanded ? 'Verberg' : 'Delen'}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {expanded && page.status === 'draft' && (
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="max-w-md">
+            <ShareWithClientButton pageId={page.id} onShared={onShared} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
