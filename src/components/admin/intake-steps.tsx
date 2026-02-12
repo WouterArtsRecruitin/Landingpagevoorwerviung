@@ -59,7 +59,7 @@ export function StepBedrijf({ form, updateField }: StepProps) {
       {/* Calendly Integration */}
       <Field
         label="Calendly Link (optioneel)"
-        value={form.calendly_url}
+        value={form.calendly_url || ""}
         onChange={(v) => updateField("calendly_url", v)}
         placeholder="https://calendly.com/jouw-username/30min"
         helpText="Voor directe afspraak scheduling op de pagina"

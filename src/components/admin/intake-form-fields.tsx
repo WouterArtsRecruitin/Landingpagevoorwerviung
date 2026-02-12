@@ -94,9 +94,9 @@ export function NumberField({ label, value, onChange, placeholder, prefix, recom
   );
 }
 
-export function SelectField({ label, value, onChange, options, recommended }: {
+export function SelectField({ label, value, onChange, options, recommended, helpText }: {
   label: string; value: string; onChange: (v: string) => void;
-  options: Array<{ value: string; label: string }>; recommended?: string;
+  options: Array<{ value: string; label: string }>; recommended?: string; helpText?: string;
 }) {
   return (
     <div>
@@ -114,7 +114,8 @@ export function SelectField({ label, value, onChange, options, recommended }: {
           <option key={o.value} value={o.value}>{o.label}</option>
         ))}
       </select>
-      {recommended && <p className="text-xs text-amber-600 mt-1">{recommended}</p>}
+      {helpText && <p className="text-xs text-gray-500 mt-1">{helpText}</p>}
+      {recommended && !helpText && <p className="text-xs text-amber-600 mt-1">{recommended}</p>}
     </div>
   );
 }

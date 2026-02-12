@@ -19,7 +19,7 @@ export function initFacebookPixel(pixelId: string): void {
   const b = document;
   const n = "script";
 
-  if (f.fbq) return;
+  if (typeof f.fbq !== 'undefined') return;
 
   const fbq: any = function () {
     // eslint-disable-next-line prefer-rest-params
