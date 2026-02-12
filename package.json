@@ -6,7 +6,7 @@
   "description": "Modulair framework voor high-conversion vacature landingspagina's met Supabase, GA4, ATS-integratie",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "build:check": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint ."
@@ -43,6 +43,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "autoprefixer": "^10.4.20",
+    "dotenv": "^17.2.4",
     "playwright": "^1.58.2",
     "postcss": "^8.4.47",
     "puppeteer": "^24.37.2",

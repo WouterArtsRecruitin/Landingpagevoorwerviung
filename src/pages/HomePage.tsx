@@ -10,6 +10,8 @@ const TEMPLATES = [
     color: '#3B82F6',
     gradient: 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)',
     description: 'Professional blauw voor engineering professionals',
+    demoUrl: '/v/asml-mechanical-engineer',
+    demoCompany: 'ASML'
   },
   {
     id: 'tech',
@@ -19,6 +21,8 @@ const TEMPLATES = [
     color: '#6366F1',
     gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     description: 'Modern purple voor software developers & IT',
+    demoUrl: '/v/exact-senior-full-stack-developer',
+    demoCompany: 'Exact'
   },
   {
     id: 'industrial',
@@ -28,6 +32,8 @@ const TEMPLATES = [
     color: '#F97316',
     gradient: 'linear-gradient(135deg, #4B5563 0%, #F97316 100%)',
     description: 'Stoer grijs/oranje voor productie & metaalbewerking',
+    demoUrl: '/v/vdl-groep-cnc-draaier',
+    demoCompany: 'VDL Groep'
   },
   {
     id: 'service',
@@ -37,6 +43,8 @@ const TEMPLATES = [
     color: '#DC2626',
     gradient: 'linear-gradient(135deg, #DC2626 0%, #7F1D1D 100%)',
     description: 'Actie rood voor service monteurs & technici',
+    demoUrl: '/v/mitsubishi-electric-servicemonteur-koeltechniek',
+    demoCompany: 'Mitsubishi'
   },
   {
     id: 'logistics',
@@ -46,6 +54,8 @@ const TEMPLATES = [
     color: '#10B981',
     gradient: 'linear-gradient(135deg, #10B981 0%, #047857 100%)',
     description: 'Helder groen voor logistiek & transport',
+    demoUrl: '/v/bolcom-warehouse-teamlead',
+    demoCompany: 'Bol.com'
   },
   {
     id: 'premium',
@@ -55,6 +65,8 @@ const TEMPLATES = [
     color: '#D97706',
     gradient: 'linear-gradient(135deg, #1F2937 0%, #D97706 100%)',
     description: 'Luxe zwart/goud voor senior posities',
+    demoUrl: '/v/philips-engineering-manager',
+    demoCompany: 'Philips'
   },
 ];
 
@@ -239,13 +251,21 @@ export default function HomePage() {
                     {template.description}
                   </p>
 
-                  <Link
-                    to="/admin/nieuw"
-                    className="block w-full py-3 rounded-lg font-semibold text-white text-center transition-all hover:scale-105 shadow"
-                    style={{ background: template.gradient }}
-                  >
-                    Gebruik Template →
-                  </Link>
+                  <div className="space-y-2">
+                    <Link
+                      to={template.demoUrl}
+                      className="block w-full py-3 rounded-lg font-semibold text-white text-center transition-all hover:scale-105 shadow"
+                      style={{ background: template.gradient }}
+                    >
+                      Bekijk Demo ({template.demoCompany}) →
+                    </Link>
+                    <Link
+                      to="/admin/nieuw"
+                      className="block w-full py-2 rounded-lg font-medium text-gray-700 text-center border-2 border-gray-300 hover:border-gray-400 transition-all text-sm"
+                    >
+                      Maak jouw eigen pagina
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
