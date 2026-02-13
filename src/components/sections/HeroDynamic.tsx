@@ -16,7 +16,7 @@ export default function HeroDynamic({ data, sectionId, className }: HeroDynamicP
   const { trackCTAClick } = useTracking();
   
   const backgroundImage = data.backgroundImageUrl || generateUnsplashUrl({
-    sector: data.sector,
+    sector: undefined,
     template: 'dynamic'
   });
 
@@ -54,12 +54,12 @@ export default function HeroDynamic({ data, sectionId, className }: HeroDynamicP
 
             {/* Heading */}
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              {data.title || data.companyTagline}
+              {data.headline || data.companyTagline}
             </h1>
 
             {/* Subtitle */}
             <p className="text-xl text-white/90 mb-8 leading-relaxed">
-              {data.subtitle || data.companyDescription}
+              {data.subheadline}
             </p>
 
             {/* CTAs */}

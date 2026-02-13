@@ -15,7 +15,7 @@ export default function HeroCorporate({ data, sectionId, className }: HeroCorpor
   const { trackCTAClick } = useTracking();
   
   const backgroundImage = data.backgroundImageUrl || generateUnsplashUrl({
-    sector: data.sector,
+    sector: undefined,
     template: 'corporate'
   });
 
@@ -53,12 +53,12 @@ export default function HeroCorporate({ data, sectionId, className }: HeroCorpor
 
           {/* Main Heading */}
           <h1 className="text-6xl md:text-7xl font-bold text-slate-900 mb-8 leading-tight">
-            {data.title || data.companyTagline}
+            {data.headline || data.companyTagline}
           </h1>
 
           {/* Subtitle */}
           <p className="text-2xl text-slate-600 mb-10 leading-relaxed max-w-3xl">
-            {data.subtitle || data.companyDescription}
+            {data.subheadline}
           </p>
 
           {/* CTAs */}

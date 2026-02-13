@@ -16,7 +16,7 @@ export default function HeroModern({ data, sectionId, className }: HeroModernPro
   
   // Dynamische Unsplash image of gebruik opgegeven URL
   const backgroundImage = data.backgroundImageUrl || generateUnsplashUrl({
-    sector: data.sector,
+    sector: undefined, // Sector info niet beschikbaar in HeroSectionData
     template: 'modern'
   });
 
@@ -72,12 +72,12 @@ export default function HeroModern({ data, sectionId, className }: HeroModernPro
 
           {/* Main Heading */}
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            {data.title || data.companyTagline}
+            {data.headline || data.companyTagline}
           </h1>
-          
+
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            {data.subtitle || data.companyDescription}
+            {data.subheadline}
           </p>
 
           {/* CTAs */}
@@ -102,13 +102,13 @@ export default function HeroModern({ data, sectionId, className }: HeroModernPro
             )}
           </div>
 
-          {/* Optional: Trust indicators */}
-          {data.trustSignals && data.trustSignals.length > 0 && (
+          {/* Optional: Quick stats */}
+          {data.quickStats && data.quickStats.length > 0 && (
             <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400">
-              {data.trustSignals.map((signal, i) => (
+              {data.quickStats.map((stat, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 bg-primary/50 rounded-full" />
-                  <span>{signal}</span>
+                  <span>{stat.label}: {stat.value}</span>
                 </div>
               ))}
             </div>
