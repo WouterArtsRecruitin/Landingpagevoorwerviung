@@ -7,6 +7,9 @@ import type { SectionConfig, SectionType } from "@/types/landing-page";
 // Lazy-loaded section registry
 const SECTION_REGISTRY: Record<SectionType, React.LazyExoticComponent<React.ComponentType<any>>> = {
   hero: lazy(() => import("@/components/sections/HeroSection")),
+  hero_modern: lazy(() => import("@/components/sections/HeroModern")),        // Template A
+  hero_dynamic: lazy(() => import("@/components/sections/HeroDynamic")),      // Template B
+  hero_corporate: lazy(() => import("@/components/sections/HeroCorporate")),  // Template C
   job_details: lazy(() => import("@/components/sections/JobDetailsSection")),
   benefits: lazy(() => import("@/components/sections/BenefitsSection")),
   salary_breakdown: lazy(() => import("@/components/sections/SalaryBreakdownSection")),

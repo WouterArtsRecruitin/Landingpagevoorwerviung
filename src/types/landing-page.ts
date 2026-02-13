@@ -5,6 +5,9 @@
 
 export type SectionType =
   | "hero"
+  | "hero_modern"        // Template A - Modern Professional
+  | "hero_dynamic"       // Template B - Bold & Dynamic
+  | "hero_corporate"     // Template C - Classic Corporate
   | "job_details"
   | "benefits"
   | "salary_breakdown"
