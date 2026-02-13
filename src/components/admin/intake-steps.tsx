@@ -32,12 +32,9 @@ export function StepBedrijf({ form, updateField }: StepProps) {
         onChange={(v) => updateField("template_style", v)}
         options={[
           { value: "auto", label: "🎨 Automatisch (op basis van functie)" },
-          { value: "engineering", label: "🔵 Engineering - Professional blauw" },
-          { value: "tech", label: "🟣 Tech/Software - Modern purple" },
-          { value: "industrial", label: "⚙️ Industrie - Stoer grijs/oranje" },
-          { value: "service", label: "🔧 Service & Montage - Actie rood" },
-          { value: "logistics", label: "🚚 Logistiek - Helder groen" },
-          { value: "premium", label: "⭐ Premium - Luxe goud/zwart" },
+          { value: "modern", label: "💼 Template A - Modern Professional" },
+          { value: "dynamic", label: "⚡ Template B - Bold & Dynamic" },
+          { value: "corporate", label: "🏢 Template C - Classic Corporate" },
         ]}
         helpText="Voor tech & industrie recruitment"
       />
