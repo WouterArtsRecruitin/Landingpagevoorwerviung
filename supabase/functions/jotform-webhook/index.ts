@@ -40,16 +40,51 @@ serve(async (req) => {
   try {
     // Parse Jotform submission
     const formData = await req.formData();
-    const submission: Partial<JotformSubmission> = {};
+    const rawData: Record<string, any> = {};
 
-    // Map Jotform fields to our structure
+    // Collect all form data
     for (const [key, value] of formData.entries()) {
-      if (typeof value === 'string') {
-        submission[key as keyof JotformSubmission] = value as any;
-      }
+      rawData[key] = value;
     }
 
-    console.log('Received Jotform submission:', submission);
+    console.log('Raw Jotform data:', rawData);
+    console.log('All form field keys:', Object.keys(rawData));
+
+    // Send raw data to Slack for debugging
+    await fetch(SLACK_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: `🔍 *DEBUG - Raw Jotform Data*\n\n\`\`\`${JSON.stringify(rawData, null, 2).substring(0, 500)}\`\`\``
+      })
+    });
+
+    // Map Jotform field IDs to our structure
+    const submission: Partial<JotformSubmission> = {
+      bedrijfsnaam: rawData.q3_bedrijfsnaam || rawData.bedrijfsnaam,
+      functietitel: rawData.q4_functietitel || rawData.functietitel,
+      locatie: rawData.q5_locatie || rawData.locatie,
+      contact_naam: rawData['q6_contact_naam[first]'] && rawData['q6_contact_naam[last]']
+        ? `${rawData['q6_contact_naam[first]']} ${rawData['q6_contact_naam[last]']}`
+        : (rawData.q6_contact_naam || rawData.contact_naam),
+      contact_email: rawData.q7_contact_email || rawData.contact_email,
+      template_style: rawData.q8_template_style || rawData.template_style,
+      website: rawData.q21_website || rawData.website,
+      branche: rawData.q9_branche || rawData.branche,
+      salaris_min: rawData.q10_salaris_min ? parseInt(rawData.q10_salaris_min) : undefined,
+      salaris_max: rawData.q11_salaris_max ? parseInt(rawData.q11_salaris_max) : undefined,
+      werktype: rawData.q12_werktype || rawData.werktype,
+      beschrijving: rawData.q13_beschrijving || rawData.beschrijving,
+      verantwoordelijkheden: rawData.q14_verantwoordelijkheden || rawData.verantwoordelijkheden,
+      eisen: rawData.q15_eisen || rawData.eisen,
+      arbeidsvoorwaarden: rawData.q16_arbeidsvoorwaarden || rawData.arbeidsvoorwaarden,
+      contact_telefoon: rawData.q17_contact_telefoon || rawData.contact_telefoon,
+      ga4_id: rawData.q18_ga4_id || rawData.ga4_id,
+      fb_pixel_id: rawData.q19_fb_pixel_id || rawData.fb_pixel_id,
+      linkedin_partner_id: rawData.q20_linkedin_partner_id || rawData.linkedin_partner_id,
+    };
+
+    console.log('Mapped submission:', submission);
 
     // Validate required fields
     const validation = validateSubmission(submission);
