@@ -1,0 +1,183 @@
+import type { LandingPageConfig } from "@/types/landing-page";
+
+export const TEMPLATE_A_MODERN_CONFIG: LandingPageConfig = {
+  id: "template-a-modern",
+  organizationId: "demo-org",
+  slug: "template-a-modern",
+  status: "published",
+  pageTitle: "Senior AI Engineer bij TechVision AI | Amsterdam",
+  metaDescription: "Bouw de toekomst van AI-gedreven oplossingen. Werk aan cutting-edge machine learning modellen met impact voor duizenden gebruikers.",
+  sections: [
+    {
+      id: "hero-1",
+      type: "hero_modern",
+      order: 0,
+      visible: true,
+      data: {
+        companyName: "TechVision AI",
+        companyTagline: "Building the Future of AI",
+        headline: "Senior AI Engineer",
+        subheadline: "Bouw de toekomst van AI-gedreven oplossingen. Werk aan cutting-edge machine learning modellen met impact voor duizenden gebruikers.",
+        location: "Amsterdam",
+        salary: "€6.000 - €8.500 p/m",
+        employmentType: "Fulltime",
+        urgencyBadge: "We zoeken versterking",
+        primaryCtaLabel: "Solliciteer nu",
+        primaryCtaAction: "scroll_to_form",
+        secondaryCtaLabel: "Meer info",
+        quickStats: [
+          { label: "Salaris", value: "€6.000-€8.500", icon: "💰" },
+          { label: "Locatie", value: "Amsterdam", icon: "📍" },
+          { label: "Remote", value: "4 dagen/week", icon: "🏠" },
+        ],
+      },
+    },
+    {
+      id: "requirements-1",
+      type: "requirements",
+      order: 1,
+      visible: true,
+      data: {
+        heading: "Wat we zoeken",
+        subheading: "Jouw profiel",
+        mustHave: [
+          { text: "MSc in Computer Science, AI of vergelijkbaar" },
+          { text: "Minimaal 5 jaar ervaring met Python en ML frameworks" },
+          { text: "Expert kennis van TensorFlow/PyTorch" },
+          { text: "Ervaring met cloud platforms (AWS/GCP/Azure)" },
+        ],
+        niceToHave: [
+          { text: "PhD in Machine Learning" },
+          { text: "Publicaties in AI conferences" },
+          { text: "Open source contributions" },
+        ],
+      },
+    },
+    {
+      id: "benefits-1",
+      type: "benefits",
+      order: 2,
+      visible: true,
+      data: {
+        heading: "Wat we bieden",
+        subheading: "Jouw pakket",
+        benefits: [
+          {
+            icon: "💰",
+            title: "Salaris €6.000 - €8.500",
+            description: "Competitief salaris op basis van ervaring",
+          },
+          {
+            icon: "🏠",
+            title: "Remote werken",
+            description: "4 dagen per week thuiswerken mogelijk",
+          },
+          {
+            icon: "📈",
+            title: "Aandelenopties",
+            description: "Deel in de groei van het bedrijf",
+          },
+          {
+            icon: "🎓",
+            title: "Opleidingsbudget €7.500",
+            description: "Jaarlijks budget voor persoonlijke ontwikkeling",
+          },
+          {
+            icon: "💻",
+            title: "MacBook Pro M3 Max",
+            description: "Top hardware en accessories",
+          },
+        ],
+      },
+    },
+    {
+      id: "application-form-1",
+      type: "application_form",
+      order: 3,
+      visible: true,
+      data: {
+        heading: "Solliciteer nu",
+        subheading: "Laat je gegevens achter en we nemen contact op",
+      },
+    },
+  ],
+  theme: {
+    colors: {
+      primary: "#3B82F6",
+      secondary: "#1E3A8A",
+      accent: "#60A5FA",
+      background: "#FFFFFF",
+      foreground: "#1F2937",
+      muted: "#F3F4F6",
+      mutedForeground: "#6B7280",
+    },
+    fonts: {
+      heading: "Inter",
+      body: "Inter",
+    },
+    borderRadius: "0.5rem",
+    logoUrl: "",
+    logoAlt: "TechVision AI",
+  },
+  formFields: [
+    {
+      name: "name",
+      label: "Naam",
+      type: "text",
+      required: true,
+      placeholder: "Je volledige naam",
+    },
+    {
+      name: "email",
+      label: "E-mail",
+      type: "email",
+      required: true,
+      placeholder: "je@email.nl",
+    },
+    {
+      name: "phone",
+      label: "Telefoon",
+      type: "tel",
+      required: true,
+      placeholder: "06 12 34 56 78",
+    },
+    {
+      name: "cv",
+      label: "CV",
+      type: "file",
+      required: true,
+      maxFileSizeMB: 5,
+      acceptedFileTypes: [".pdf", ".doc", ".docx"],
+    },
+    {
+      name: "motivation",
+      label: "Motivatie",
+      type: "textarea",
+      required: false,
+      placeholder: "Waarom wil je bij ons werken?",
+    },
+  ],
+  formSuccessMessage: "Bedankt! We nemen snel contact op.",
+  contact: {
+    personName: "Sarah Chen",
+    personRole: "Tech Recruiter",
+    personEmail: "demo@kandidatentekort.nl",
+    personPhone: "+31 20 123 4567",
+  },
+  analytics: {},
+  cookieConsent: {
+    enabled: true,
+    privacyPolicyUrl: "#",
+    categories: {
+      necessary: true,
+      analytics: true,
+      marketing: true,
+    },
+  },
+  organization: {
+    name: "TechVision AI",
+    slug: "techvision-ai",
+    logoUrl: "",
+    websiteUrl: "https://techvision.ai",
+  },
+};

@@ -1,0 +1,177 @@
+import type { LandingPageConfig } from "@/types/landing-page";
+
+export const TEMPLATE_B_DYNAMIC_CONFIG: LandingPageConfig = {
+  id: "template-b-dynamic",
+  organizationId: "demo-org",
+  slug: "template-b-dynamic",
+  status: "published",
+  pageTitle: "Projectleider Duurzame Bouw bij GreenBuild Solutions | Utrecht",
+  metaDescription: "Leid innovatieve duurzame bouwprojecten van concept tot oplevering. Drijvende kracht achter circulaire en energieneutrale gebouwen.",
+  sections: [
+    {
+      id: "hero-1",
+      type: "hero_dynamic",
+      order: 0,
+      visible: true,
+      data: {
+        companyName: "GreenBuild Solutions",
+        companyTagline: "Building a Sustainable Future",
+        headline: "Projectleider Duurzame Bouw",
+        subheadline: "Leid innovatieve duurzame bouwprojecten van concept tot oplevering. Ben de drijvende kracht achter circulaire en energieneutrale gebouwen.",
+        location: "Utrecht",
+        salary: "€4.500 - €6.000 p/m",
+        employmentType: "Fulltime",
+        primaryCtaLabel: "Direct solliciteren",
+        primaryCtaAction: "scroll_to_form",
+        secondaryCtaLabel: "Over ons",
+      },
+    },
+    {
+      id: "requirements-1",
+      type: "requirements",
+      order: 1,
+      visible: true,
+      data: {
+        heading: "Jouw profiel",
+        subheading: "Wat je meebrengt",
+        mustHave: [
+          { text: "HBO/WO Bouwkunde of Civiele Techniek" },
+          { text: "Minimaal 3 jaar ervaring als projectleider" },
+          { text: "Kennis van duurzaam bouwen en circulaire economie" },
+          { text: "Leiderschaps- en communicatievaardigheden" },
+        ],
+        niceToHave: [
+          { text: "BREEAM assessor certificering" },
+          { text: "Ervaring met houtbouw" },
+          { text: "Netwerk in de duurzame bouwsector" },
+        ],
+      },
+    },
+    {
+      id: "benefits-1",
+      type: "benefits",
+      order: 2,
+      visible: true,
+      data: {
+        heading: "Wat we bieden",
+        subheading: "Jouw pakket",
+        benefits: [
+          {
+            icon: "💰",
+            title: "Salaris €4.500 - €6.000",
+            description: "Marktconform salaris plus bonusregeling",
+          },
+          {
+            icon: "🏢",
+            title: "Hybride werken",
+            description: "3 dagen kantoor, 2 dagen thuis",
+          },
+          {
+            icon: "🚗",
+            title: "Lease elektrische auto",
+            description: "Inclusief laadpas",
+          },
+          {
+            icon: "🌴",
+            title: "30 vakantiedagen",
+            description: "Ruim boven CAO",
+          },
+          {
+            icon: "💪",
+            title: "Projectbonus",
+            description: "Bonus op basis van resultaten",
+          },
+        ],
+      },
+    },
+    {
+      id: "application-form-1",
+      type: "application_form",
+      order: 3,
+      visible: true,
+      data: {
+        heading: "Word onderdeel van ons team",
+        subheading: "Vul het formulier in en start je carrière in duurzame bouw",
+      },
+    },
+  ],
+  theme: {
+    colors: {
+      primary: "#10B981",
+      secondary: "#059669",
+      accent: "#34D399",
+      background: "#FFFFFF",
+      foreground: "#1F2937",
+      muted: "#F3F4F6",
+      mutedForeground: "#6B7280",
+    },
+    fonts: {
+      heading: "Inter",
+      body: "Inter",
+    },
+    borderRadius: "0.5rem",
+    logoUrl: "",
+    logoAlt: "GreenBuild Solutions",
+  },
+  formFields: [
+    {
+      name: "name",
+      label: "Naam",
+      type: "text",
+      required: true,
+      placeholder: "Je volledige naam",
+    },
+    {
+      name: "email",
+      label: "E-mail",
+      type: "email",
+      required: true,
+      placeholder: "je@email.nl",
+    },
+    {
+      name: "phone",
+      label: "Telefoon",
+      type: "tel",
+      required: true,
+      placeholder: "06 12 34 56 78",
+    },
+    {
+      name: "cv",
+      label: "CV",
+      type: "file",
+      required: true,
+      maxFileSizeMB: 5,
+      acceptedFileTypes: [".pdf", ".doc", ".docx"],
+    },
+    {
+      name: "motivation",
+      label: "Motivatie",
+      type: "textarea",
+      required: false,
+      placeholder: "Waarom wil je bij ons werken?",
+    },
+  ],
+  formSuccessMessage: "Bedankt! We nemen snel contact op.",
+  contact: {
+    personName: "Mark van der Berg",
+    personRole: "HR Manager",
+    personEmail: "demo@kandidatentekort.nl",
+    personPhone: "+31 30 789 0123",
+  },
+  analytics: {},
+  cookieConsent: {
+    enabled: true,
+    privacyPolicyUrl: "#",
+    categories: {
+      necessary: true,
+      analytics: true,
+      marketing: true,
+    },
+  },
+  organization: {
+    name: "GreenBuild Solutions",
+    slug: "greenbuild-solutions",
+    logoUrl: "",
+    websiteUrl: "https://greenbuild.nl",
+  },
+};
