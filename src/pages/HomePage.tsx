@@ -6,37 +6,38 @@ import VideoSection from '@/components/VideoSection';
 const TEMPLATES = [
   {
     id: 'modern',
-    name: 'Template A - Modern Professional',
+    name: 'Modern Professional',
     emoji: '💼',
     sector: 'Alle Sectoren',
     color: '#3B82F6',
     gradient: 'linear-gradient(135deg, #1E293B 0%, #3B82F6 100%)',
-    description: 'Dark modern design met tech focus - Perfect voor IT, Engineering & Tech bedrijven',
+    description: 'Dark modern design met professionele uitstraling - Perfect voor alle sectoren',
     demoUrl: '/v/template-a-modern',
-    demoCompany: 'Modern Professional'
+    demoCompany: 'TechVision AI'
   },
-  {
-    id: 'dynamic',
-    name: 'Template B - Bold & Dynamic',
-    emoji: '⚡',
-    sector: 'Alle Sectoren',
-    color: '#10B981',
-    gradient: 'linear-gradient(135deg, #059669 0%, #10B981 100%)',
-    description: 'Energiek groen design - Ideaal voor innovatieve & creatieve organisaties',
-    demoUrl: '/v/template-b-dynamic',
-    demoCompany: 'Bold & Dynamic'
-  },
-  {
-    id: 'corporate',
-    name: 'Template C - Classic Corporate',
-    emoji: '🏢',
-    sector: 'Alle Sectoren',
-    color: '#6366F1',
-    gradient: 'linear-gradient(135deg, #FFFFFF 0%, #6366F1 100%)',
-    description: 'Clean corporate stijl - Perfect voor traditionele bedrijven & finance',
-    demoUrl: '/v/template-c-corporate',
-    demoCompany: 'Classic Corporate'
-  },
+  // Template B & C - Beschikbaar later
+  // {
+  //   id: 'dynamic',
+  //   name: 'Bold & Dynamic',
+  //   emoji: '⚡',
+  //   sector: 'Alle Sectoren',
+  //   color: '#10B981',
+  //   gradient: 'linear-gradient(135deg, #059669 0%, #10B981 100%)',
+  //   description: 'Energiek groen design - Ideaal voor innovatieve organisaties',
+  //   demoUrl: '/v/template-b-dynamic',
+  //   demoCompany: 'GreenBuild Solutions'
+  // },
+  // {
+  //   id: 'corporate',
+  //   name: 'Classic Corporate',
+  //   emoji: '🏢',
+  //   sector: 'Alle Sectoren',
+  //   color: '#6366F1',
+  //   gradient: 'linear-gradient(135deg, #FFFFFF 0%, #6366F1 100%)',
+  //   description: 'Clean corporate stijl - Perfect voor finance & traditionele bedrijven',
+  //   demoUrl: '/v/template-c-corporate',
+  //   demoCompany: 'Fintech Partners'
+  // },
 ];
 
 export default function HomePage() {
@@ -105,12 +106,13 @@ export default function HomePage() {
       {/* Social Proof */}
       <section className="container mx-auto px-4 sm:px-6 py-12 border-y border-gray-200 bg-white/50">
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-sm text-gray-500 mb-6">Vertrouwd door recruitment teams bij</p>
+          <p className="text-center text-sm text-gray-500 mb-6">Templates geschikt voor alle sectoren</p>
           <div className="flex flex-wrap justify-center items-center gap-8 sm:gap-12 opacity-60">
-            <div className="text-2xl font-bold text-gray-400">ASML</div>
-            <div className="text-2xl font-bold text-gray-400">Philips</div>
-            <div className="text-2xl font-bold text-gray-400">VDL</div>
-            <div className="text-2xl font-bold text-gray-400">NXP</div>
+            <div className="text-lg font-semibold text-gray-400">Tech & IT</div>
+            <div className="text-lg font-semibold text-gray-400">Bouw & Vastgoed</div>
+            <div className="text-lg font-semibold text-gray-400">Finance</div>
+            <div className="text-lg font-semibold text-gray-400">Zorg & Welzijn</div>
+            <div className="text-lg font-semibold text-gray-400">Industrie</div>
           </div>
         </div>
       </section>
@@ -178,11 +180,11 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-              6 Templates voor Tech & Industrie
+              Professioneel Template voor Alle Sectoren
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Elk template heeft een uniek kleurenschema en visuele identiteit.
-              Kies wat past bij jouw vacature.
+              Modern dark design met professionele uitstraling.
+              Werkt perfect voor tech, bouw, finance, zorg en alle andere branches.
             </p>
           </div>
 
