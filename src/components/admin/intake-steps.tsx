@@ -25,18 +25,15 @@ export function StepBedrijf({ form, updateField }: StepProps) {
         </div>
       </div>
 
-      {/* Template Selection */}
+      {/* Template Selection - Currently only 1 template available */}
       <SelectField
         label="Template Stijl"
-        value={form.template_style || "auto"}
+        value={form.template_style || "modern"}
         onChange={(v) => updateField("template_style", v)}
         options={[
-          { value: "auto", label: "🎨 Automatisch (op basis van functie)" },
-          { value: "modern", label: "💼 Template A - Modern Professional" },
-          { value: "dynamic", label: "⚡ Template B - Bold & Dynamic" },
-          { value: "corporate", label: "🏢 Template C - Classic Corporate" },
+          { value: "modern", label: "💼 Modern Professional - Dark Design" },
         ]}
-        helpText="Voor tech & industrie recruitment"
+        helpText="Professioneel dark design - Geschikt voor alle sectoren"
       />
 
       {/* Image Style */}

@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import FAQSection from '@/components/FAQSection';
 import VideoSection from '@/components/VideoSection';
 
@@ -41,9 +40,6 @@ const TEMPLATES = [
 ];
 
 export default function HomePage() {
-  const [showAllTemplates, setShowAllTemplates] = useState(false);
-  const templatesToShow = showAllTemplates ? TEMPLATES : TEMPLATES.slice(0, 2);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Navigation */}
@@ -188,8 +184,9 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            {templatesToShow.map(template => (
+          {/* Single Template Card - Centered */}
+          <div className="max-w-2xl mx-auto">
+            {TEMPLATES.map(template => (
               <div
                 key={template.id}
                 className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all overflow-hidden border border-gray-100"
@@ -244,17 +241,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-
-          {!showAllTemplates && (
-            <div className="text-center">
-              <button
-                onClick={() => setShowAllTemplates(true)}
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-xl hover:scale-105 transition-all font-bold text-lg"
-              >
-                Toon meer templates ({TEMPLATES.length - 2} meer)
-              </button>
-            </div>
-          )}
         </div>
       </section>
 
