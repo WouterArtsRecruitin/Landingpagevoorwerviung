@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
+import { generateLandingPageClientSide } from "@/lib/generate-landing-page";
 import type { IntakeFormData } from "@/types/admin";
 import {
   STEPS, EMPTY_FORM,
@@ -33,19 +34,39 @@ export default function IntakeFormPage() {
     setError(null);
 
     try {
+      // Probeer eerst de edge function
       const { data, error: fnError } = await supabase.functions.invoke(
         "generate-landing-page",
         { body: { ...form, created_by: form.contact_email } }
       );
 
-      if (fnError || !data?.success) {
-        setError(fnError?.message || data?.error || "Er ging iets mis");
+      if (!fnError && data?.success) {
+        setResult({ slug: data.slug, url: data.url });
         return;
       }
 
-      setResult({ slug: data.slug, url: data.url });
+      // Edge function mislukt → client-side fallback
+      console.warn("Edge function mislukt, gebruik client-side fallback:", fnError?.message || data?.error);
+      const fallbackResult = await generateLandingPageClientSide(form);
+
+      if (fallbackResult.success) {
+        setResult({ slug: fallbackResult.slug, url: fallbackResult.url });
+      } else {
+        setError(fallbackResult.error);
+      }
     } catch {
-      setError("Kan geen verbinding maken met de server");
+      // Netwerk/connectie fout → probeer client-side fallback
+      console.warn("Edge function niet bereikbaar, gebruik client-side fallback");
+      try {
+        const fallbackResult = await generateLandingPageClientSide(form);
+        if (fallbackResult.success) {
+          setResult({ slug: fallbackResult.slug, url: fallbackResult.url });
+        } else {
+          setError(fallbackResult.error);
+        }
+      } catch {
+        setError("Kan geen verbinding maken met de server");
+      }
     } finally {
       setSubmitting(false);
     }
