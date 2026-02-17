@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
-import { generateLandingPageClientSide } from "@/lib/generate-landing-page";
 import type { IntakeFormData } from "@/types/admin";
 import {
   STEPS, EMPTY_FORM,
@@ -33,8 +32,8 @@ export default function IntakeFormPage() {
     setSubmitting(true);
     setError(null);
 
+    // Stap 1: Probeer edge function
     try {
-      // Probeer eerst de edge function
       const { data, error: fnError } = await supabase.functions.invoke(
         "generate-landing-page",
         { body: { ...form, created_by: form.contact_email } }
@@ -42,11 +41,17 @@ export default function IntakeFormPage() {
 
       if (!fnError && data?.success) {
         setResult({ slug: data.slug, url: data.url });
+        setSubmitting(false);
         return;
       }
+      console.warn("Edge function fout:", fnError?.message || data?.error);
+    } catch (e) {
+      console.warn("Edge function niet bereikbaar:", e);
+    }
 
-      // Edge function mislukt → client-side fallback
-      console.warn("Edge function mislukt, gebruik client-side fallback:", fnError?.message || data?.error);
+    // Stap 2: Fallback → direct via Supabase client
+    try {
+      const { generateLandingPageClientSide } = await import("@/lib/generate-landing-page");
       const fallbackResult = await generateLandingPageClientSide(form);
 
       if (fallbackResult.success) {
@@ -54,19 +59,9 @@ export default function IntakeFormPage() {
       } else {
         setError(fallbackResult.error);
       }
-    } catch {
-      // Netwerk/connectie fout → probeer client-side fallback
-      console.warn("Edge function niet bereikbaar, gebruik client-side fallback");
-      try {
-        const fallbackResult = await generateLandingPageClientSide(form);
-        if (fallbackResult.success) {
-          setResult({ slug: fallbackResult.slug, url: fallbackResult.url });
-        } else {
-          setError(fallbackResult.error);
-        }
-      } catch {
-        setError("Kan geen verbinding maken met de server");
-      }
+    } catch (e) {
+      console.error("Fallback ook mislukt:", e);
+      setError("Kan de pagina niet genereren. Controleer je internetverbinding en probeer het opnieuw.");
     } finally {
       setSubmitting(false);
     }
