@@ -91,9 +91,34 @@ export default function LandingPage() {
 
       setSubmitted(true);
 
-      // Send to webhook/email if configured
+      // Send email notifications (fire-and-forget, don't block the UI)
+      const jobUrl = window.location.href;
+
       if (page?.contact_person_email) {
-        // TODO: Trigger email notification
+        supabase.functions.invoke('send-email', {
+          body: {
+            type: 'recruiter_notification',
+            to: page.contact_person_email,
+            job_title: page.page_title,
+            applicant_name: formData.name,
+            applicant_email: formData.email,
+            applicant_phone: formData.phone,
+            linkedin_url: formData.linkedin || undefined,
+            motivation: formData.motivation,
+          },
+        }).catch((err) => console.error('Failed to send recruiter notification:', err));
+      }
+
+      if (formData.email) {
+        supabase.functions.invoke('send-email', {
+          body: {
+            type: 'candidate_confirmation',
+            to: formData.email,
+            candidate_name: formData.name,
+            job_title: page?.page_title,
+            job_url: jobUrl,
+          },
+        }).catch((err) => console.error('Failed to send candidate confirmation:', err));
       }
     } catch (err) {
       console.error('Error submitting application:', err);

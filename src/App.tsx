@@ -1,8 +1,14 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/providers/AuthProvider";
+import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import LandingPage from "@/pages/LandingPage";
 import ApprovalPage from "@/pages/ApprovalPage";
 import HomePage from "@/pages/HomePage";
+
+// Auth pages
+const LoginPage = lazy(() => import("@/pages/LoginPage"));
+const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 
 // Admin pages (lazy loaded)
 const AdminLayout = lazy(() => import("@/pages/admin/AdminLayout"));
@@ -12,6 +18,8 @@ const PagesListPage = lazy(() => import("@/pages/admin/PagesListPage"));
 const CandidatesPage = lazy(() => import("@/pages/admin/CandidatesPage"));
 const GdprPage = lazy(() => import("@/pages/admin/GdprPage"));
 const AnalyticsPage = lazy(() => import("@/pages/admin/AnalyticsPage"));
+const BillingPage = lazy(() => import("@/pages/admin/BillingPage"));
+const PageEditorPage = lazy(() => import("@/pages/admin/PageEditorPage"));
 
 function AdminLoading() {
   return (
@@ -52,36 +60,60 @@ function NotFound() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Home page */}
-        <Route path="/" element={<HomePage />} />
+      <AuthProvider>
+        <Routes>
+          {/* Home page */}
+          <Route path="/" element={<HomePage />} />
 
-        {/* Landing page route: /v/{slug} */}
-        <Route path="/v/:slug" element={<LandingPage />} />
+          {/* Landing page route: /v/{slug} */}
+          <Route path="/v/:slug" element={<LandingPage />} />
 
-        {/* Client approval route */}
-        <Route path="/approve/:token" element={<ApprovalPage />} />
+          {/* Client approval route */}
+          <Route path="/approve/:token" element={<ApprovalPage />} />
 
-        {/* Admin routes */}
-        <Route
-          path="/admin"
-          element={
-            <Suspense fallback={<AdminLoading />}>
-              <AdminLayout />
-            </Suspense>
-          }
-        >
-          <Route index element={<DashboardPage />} />
-          <Route path="nieuw" element={<IntakeFormPage />} />
-          <Route path="paginas" element={<PagesListPage />} />
-          <Route path="kandidaten" element={<CandidatesPage />} />
-          <Route path="analytics" element={<AnalyticsPage />} />
-          <Route path="avg" element={<GdprPage />} />
-        </Route>
+          {/* Auth routes */}
+          <Route
+            path="/login"
+            element={
+              <Suspense fallback={<AdminLoading />}>
+                <LoginPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <Suspense fallback={<AdminLoading />}>
+                <RegisterPage />
+              </Suspense>
+            }
+          />
 
-        {/* 404 */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* Admin routes (protected) */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Suspense fallback={<AdminLoading />}>
+                  <AdminLayout />
+                </Suspense>
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<DashboardPage />} />
+            <Route path="nieuw" element={<IntakeFormPage />} />
+            <Route path="paginas" element={<PagesListPage />} />
+            <Route path="paginas/:pageId/edit" element={<PageEditorPage />} />
+            <Route path="kandidaten" element={<CandidatesPage />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="avg" element={<GdprPage />} />
+            <Route path="billing" element={<BillingPage />} />
+          </Route>
+
+          {/* 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

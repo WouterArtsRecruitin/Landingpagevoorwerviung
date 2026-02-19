@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { useAuth } from "@/providers/AuthProvider";
 
 const NAV_ITEMS = [
   { to: "/admin", label: "Dashboard", end: true },
@@ -7,9 +8,12 @@ const NAV_ITEMS = [
   { to: "/admin/kandidaten", label: "Kandidaten" },
   { to: "/admin/analytics", label: "Analytics" },
   { to: "/admin/avg", label: "AVG / GDPR" },
+  { to: "/admin/billing", label: "Abonnement" },
 ];
 
 export default function AdminLayout() {
+  const { user, profile, signOut } = useAuth();
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -27,6 +31,24 @@ export default function AdminLayout() {
                 Landingspagina's & kandidaten
               </p>
             </div>
+          </div>
+
+          {/* User menu */}
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden sm:block">
+              <p className="text-sm font-medium text-gray-900">
+                {profile?.full_name || user?.email}
+              </p>
+              <p className="text-xs text-gray-500 capitalize">
+                {profile?.subscription_plan || "free"} plan
+              </p>
+            </div>
+            <button
+              onClick={signOut}
+              className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Uitloggen
+            </button>
           </div>
         </div>
       </header>

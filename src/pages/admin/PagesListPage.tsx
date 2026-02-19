@@ -240,6 +240,13 @@ function PageRow({
             Bekijk
           </a>
 
+          <a
+            href={`/admin/paginas/${page.id}/edit`}
+            className="text-xs px-3 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100 transition-colors font-medium"
+          >
+            Bewerken
+          </a>
+
           {page.status === 'draft' && (
             <button
               onClick={() => setExpanded(!expanded)}
