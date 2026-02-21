@@ -114,6 +114,7 @@ serve(async (req) => {
         contact_whatsapp_url: body.contact_whatsapp
           ? `https://wa.me/${body.contact_whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hoi, ik heb interesse in de ${body.job_title} vacature bij ${body.company_name}!`)}`
           : null,
+        contact_calendly_url: body.calendly_url || null,
       })
       .select("id")
       .single();

@@ -412,6 +412,7 @@ export async function generateLandingPageClientSide(
         contact_whatsapp_url: form.contact_whatsapp
           ? `https://wa.me/${form.contact_whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hoi, ik heb interesse in de ${form.job_title} vacature bij ${form.company_name}!`)}`
           : null,
+        contact_calendly_url: form.calendly_url || null,
       })
       .select("id")
       .single();
