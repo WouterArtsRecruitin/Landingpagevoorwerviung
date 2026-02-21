@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { uploadBrandAsset } from "@/lib/upload";
 
 // === Review component ===
 
@@ -190,6 +191,107 @@ export function ListField({ label, items, onChange, placeholder, helpText, recom
         </div>
       )}
       {helpText && <p className="text-xs text-gray-500 mt-1">{helpText}</p>}
+    </div>
+  );
+}
+
+export function FileUploadField({ label, accept, folder, currentUrl, onUploaded, onFileSelected, helpText, previewType = "none" }: {
+  label: string;
+  accept: string;
+  folder: "logos" | "vacancy-texts";
+  currentUrl: string;
+  onUploaded: (url: string) => void;
+  onFileSelected?: (file: File | null) => void;
+  helpText?: string;
+  previewType?: "image" | "file" | "none";
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setError("Bestand te groot (max 10MB)");
+      return;
+    }
+
+    setFileName(file.name);
+    setError(null);
+    onFileSelected?.(file);
+
+    setUploading(true);
+    try {
+      const url = await uploadBrandAsset(file, folder);
+      if (url) {
+        onUploaded(url);
+      } else {
+        setError("Upload mislukt. Controleer je verbinding.");
+      }
+    } catch {
+      setError("Upload mislukt. Probeer het opnieuw.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function handleRemove() {
+    setFileName(null);
+    setError(null);
+    onUploaded("");
+    onFileSelected?.(null);
+    if (inputRef.current) inputRef.current.value = "";
+  }
+
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+
+      {/* Preview */}
+      {currentUrl && previewType === "image" && (
+        <div className="mb-2 flex items-center gap-3">
+          <img src={currentUrl} alt="Preview" className="h-12 w-auto rounded border object-contain bg-gray-50" />
+          <button type="button" onClick={handleRemove} className="text-xs text-red-500 hover:underline">Verwijderen</button>
+        </div>
+      )}
+      {currentUrl && previewType === "file" && (
+        <div className="mb-2 flex items-center gap-3 bg-gray-50 rounded px-3 py-2">
+          <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          <span className="flex-1 text-sm text-gray-700 truncate">{fileName || "Bestand geupload"}</span>
+          <button type="button" onClick={handleRemove} className="text-xs text-red-500 hover:underline">Verwijderen</button>
+        </div>
+      )}
+
+      {/* Upload button */}
+      {!currentUrl && (
+        <div className="relative">
+          <input
+            ref={inputRef}
+            type="file"
+            accept={accept}
+            onChange={handleFile}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            disabled={uploading}
+          />
+          <div className={`border-2 border-dashed rounded-lg px-4 py-6 text-center transition-colors ${uploading ? "border-blue-300 bg-blue-50" : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"}`}>
+            {uploading ? (
+              <p className="text-sm text-blue-600">Bezig met uploaden...</p>
+            ) : (
+              <>
+                <svg className="w-8 h-8 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                <p className="text-sm text-gray-600">Klik om te uploaden of sleep een bestand hierheen</p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {helpText && !error && <p className="text-xs text-gray-500 mt-1">{helpText}</p>}
     </div>
   );
 }
