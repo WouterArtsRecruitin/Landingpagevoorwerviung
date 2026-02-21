@@ -42,10 +42,17 @@ serve(async (req) => {
     const { plan } = await req.json();
     const priceId = PRICE_MAP[plan];
 
-    if (!priceId || !STRIPE_SECRET_KEY) {
+    if (!priceId) {
       return new Response(
-        JSON.stringify({ error: "Stripe not configured", url: null }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Invalid plan selected" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!STRIPE_SECRET_KEY) {
+      return new Response(
+        JSON.stringify({ error: "Payment system not configured" }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
