@@ -1,7 +1,7 @@
 import type { IntakeFormData } from "@/types/admin";
 import { EMPLOYMENT_TYPES, SECTORS } from "@/types/admin";
 import {
-  Field, NumberField, SelectField, TextAreaField, ListField, ReviewSection,
+  Field, NumberField, SelectField, TextAreaField, ListField, ReviewSection, FileUploadField,
 } from "@/components/admin/intake-form-fields";
 
 interface StepProps {
@@ -15,23 +15,50 @@ export function StepBedrijf({ form, updateField }: StepProps) {
       <h3 className="text-lg font-semibold">Bedrijfsgegevens</h3>
       <Field label="Bedrijfsnaam" value={form.company_name} onChange={(v) => updateField("company_name", v)} placeholder="Bijv. Aebi Schmidt Nederland" required />
       <Field label="Website" value={form.company_website} onChange={(v) => updateField("company_website", v)} placeholder="https://www.bedrijf.nl" recommended="Wordt gebruikt voor branding & privacy policy" />
-      <Field label="Logo URL" value={form.company_logo_url} onChange={(v) => updateField("company_logo_url", v)} placeholder="https://..." helpText="Link naar het bedrijfslogo (optioneel)" />
+
+      {/* Logo Upload */}
+      <FileUploadField
+        label="Bedrijfslogo"
+        accept="image/png,image/jpeg,image/svg+xml,image/webp"
+        folder="logos"
+        currentUrl={form.company_logo_url}
+        onUploaded={(url) => updateField("company_logo_url", url)}
+        onFileSelected={(file) => updateField("company_logo_file", file)}
+        helpText="PNG, JPG, SVG of WebP (max 10MB). Wordt getoond op de landingspagina."
+        previewType="image"
+      />
+
       <SelectField label="Branche" value={form.company_sector} onChange={(v) => updateField("company_sector", v)} options={SECTORS.map((s) => ({ value: s, label: s }))} recommended="Helpt bij content generatie" />
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Primaire kleur</label>
-        <div className="flex items-center gap-3">
-          <input type="color" value={form.primary_color} onChange={(e) => updateField("primary_color", e.target.value)} className="w-10 h-10 rounded cursor-pointer border" />
-          <input type="text" value={form.primary_color} onChange={(e) => updateField("primary_color", e.target.value)} className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+
+      {/* Huisstijl kleuren */}
+      <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+        <h4 className="text-sm font-semibold text-gray-900">Huisstijl kleuren</h4>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Primaire kleur</label>
+            <div className="flex items-center gap-2">
+              <input type="color" value={form.primary_color} onChange={(e) => updateField("primary_color", e.target.value)} className="w-10 h-10 rounded cursor-pointer border" />
+              <input type="text" value={form.primary_color} onChange={(e) => updateField("primary_color", e.target.value)} className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Secundaire kleur</label>
+            <div className="flex items-center gap-2">
+              <input type="color" value={form.secondary_color} onChange={(e) => updateField("secondary_color", e.target.value)} className="w-10 h-10 rounded cursor-pointer border" />
+              <input type="text" value={form.secondary_color} onChange={(e) => updateField("secondary_color", e.target.value)} className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono" />
+            </div>
+          </div>
         </div>
+        <p className="text-xs text-gray-500">Deze kleuren worden doorvertaald naar de landingspagina.</p>
       </div>
 
-      {/* Template Selection - Currently only 1 template available */}
+      {/* Template Selection */}
       <SelectField
         label="Template Stijl"
         value={form.template_style || "modern"}
         onChange={(v) => updateField("template_style", v)}
         options={[
-          { value: "modern", label: "💼 Modern Professional - Dark Design" },
+          { value: "modern", label: "Modern Professional - Dark Design" },
         ]}
         helpText="Professioneel dark design - Geschikt voor alle sectoren"
       />
@@ -42,10 +69,10 @@ export function StepBedrijf({ form, updateField }: StepProps) {
         value={form.image_style || "photos"}
         onChange={(v) => updateField("image_style", v)}
         options={[
-          { value: "photos", label: "📸 Foto's (realistisch)" },
-          { value: "illustrations", label: "🎨 Illustraties (modern)" },
-          { value: "3d", label: "🎮 3D renders (futuristisch)" },
-          { value: "minimal", label: "⚪ Minimaal (alleen iconen)" },
+          { value: "photos", label: "Foto's (realistisch)" },
+          { value: "illustrations", label: "Illustraties (modern)" },
+          { value: "3d", label: "3D renders (futuristisch)" },
+          { value: "minimal", label: "Minimaal (alleen iconen)" },
         ]}
         helpText="Welke visuele stijl past bij je merk?"
       />
@@ -77,6 +104,20 @@ export function StepVacature({ form, updateField }: StepProps) {
       </p>
       <SelectField label="Dienstverband" value={form.employment_type} onChange={(v) => updateField("employment_type", v as IntakeFormData["employment_type"])} options={EMPLOYMENT_TYPES.map((e) => ({ value: e.value, label: e.label }))} />
       <TextAreaField label="Korte beschrijving" value={form.job_description} onChange={(v) => updateField("job_description", v)} placeholder="Wat houdt de functie in? 2-3 zinnen." rows={3} recommended="Wordt bovenaan de pagina getoond" />
+
+      {/* Vacaturetekst upload */}
+      <div className="border-t pt-4 mt-4">
+        <FileUploadField
+          label="Vacaturetekst uploaden (optioneel)"
+          accept=".pdf,.doc,.docx,.txt"
+          folder="vacancy-texts"
+          currentUrl={form.vacancy_text_url}
+          onUploaded={(url) => updateField("vacancy_text_url", url)}
+          onFileSelected={(file) => updateField("vacancy_text_file", file)}
+          helpText="Upload een bestaande vacaturetekst (PDF, Word of TXT). De inhoud wordt gebruikt om de landingspagina te verrijken."
+          previewType="file"
+        />
+      </div>
     </div>
   );
 }
@@ -178,8 +219,10 @@ export function StepReview({ form, setStep, canSubmit, validationErrors, missing
         <ReviewSection title="Bedrijf" stepNr={1} onEdit={() => setStep(1)} rows={[
           { label: "Bedrijfsnaam", value: form.company_name },
           { label: "Website", value: form.company_website },
+          { label: "Logo", value: form.company_logo_url ? "Geupload" : "Niet geupload" },
           { label: "Branche", value: form.company_sector },
-          { label: "Kleur", value: form.primary_color, isColor: true },
+          { label: "Primaire kleur", value: form.primary_color, isColor: true },
+          { label: "Secundaire kleur", value: form.secondary_color, isColor: true },
         ]} />
         <ReviewSection title="Vacature" stepNr={2} onEdit={() => setStep(2)} rows={[
           { label: "Functietitel", value: form.job_title },
@@ -187,6 +230,7 @@ export function StepReview({ form, setStep, canSubmit, validationErrors, missing
           { label: "Salaris", value: form.salary_min && form.salary_max ? `\u20AC${form.salary_min} - \u20AC${form.salary_max}` : form.salary_min ? `Vanaf \u20AC${form.salary_min}` : "Niet opgegeven" },
           { label: "Dienstverband", value: form.employment_type },
           { label: "Beschrijving", value: form.job_description || "Niet opgegeven" },
+          { label: "Vacaturetekst", value: form.vacancy_text_url ? "Geupload" : "Niet geupload" },
         ]} />
         <ReviewSection title="Details" stepNr={3} onEdit={() => setStep(3)} rows={[
           { label: "Verantwoordelijkheden", value: form.responsibilities.length > 0 ? form.responsibilities.join(", ") : "Niet opgegeven" },

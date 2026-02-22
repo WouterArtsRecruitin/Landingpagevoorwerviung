@@ -46,26 +46,36 @@ export default function LandingPage() {
       {(config) => (
         <ConfigProvider config={config}>
           <ThemeProvider theme={config.theme}>
-            <TrackingProvider
-              landingPageId={config.id}
-              analyticsConfig={config.analytics}
-              consentGiven={{
-                analytics: consent.analytics,
-                marketing: consent.marketing,
-              }}
-            >
+            {consent.decided ? (
+              <TrackingProvider
+                landingPageId={config.id}
+                analyticsConfig={config.analytics}
+                consentGiven={{
+                  analytics: consent.analytics,
+                  marketing: consent.marketing,
+                }}
+              >
+                <ABTestProvider
+                  landingPageId={config.id}
+                  baseSections={config.sections}
+                  variants={[]}
+                >
+                  <LandingPageContent config={config} />
+                </ABTestProvider>
+              </TrackingProvider>
+            ) : (
               <ABTestProvider
                 landingPageId={config.id}
                 baseSections={config.sections}
                 variants={[]}
               >
                 <LandingPageContent config={config} />
-                <CookieConsent
-                  config={config.cookieConsent}
-                  onConsentChange={handleConsentChange}
-                />
               </ABTestProvider>
-            </TrackingProvider>
+            )}
+            <CookieConsent
+              config={config.cookieConsent}
+              onConsentChange={handleConsentChange}
+            />
           </ThemeProvider>
         </ConfigProvider>
       )}

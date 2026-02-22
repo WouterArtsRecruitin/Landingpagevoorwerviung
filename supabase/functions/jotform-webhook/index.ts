@@ -2,6 +2,12 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const SLACK_WEBHOOK = Deno.env.get('SLACK_WEBHOOK_URL') ?? '';
+const JOTFORM_API_KEY = Deno.env.get('JOTFORM_API_KEY') ?? '';
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 interface JotformSubmission {
   // Bedrijfsinfo
@@ -37,6 +43,14 @@ interface JotformSubmission {
 }
 
 serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  if (req.method !== "POST") {
+    return new Response("Method not allowed", { status: 405, headers: corsHeaders });
+  }
+
   try {
     // Parse Jotform submission
     const formData = await req.formData();
@@ -47,17 +61,7 @@ serve(async (req) => {
       rawData[key] = value;
     }
 
-    console.log('Raw Jotform data:', rawData);
-    console.log('All form field keys:', Object.keys(rawData));
-
-    // Send raw data to Slack for debugging
-    await fetch(SLACK_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: `🔍 *DEBUG - Raw Jotform Data*\n\n\`\`\`${JSON.stringify(rawData, null, 2).substring(0, 500)}\`\`\``
-      })
-    });
+    console.log('Jotform webhook received, fields:', Object.keys(rawData).length);
 
     // Map Jotform field IDs to our structure
     const submission: Partial<JotformSubmission> = {
@@ -102,7 +106,7 @@ serve(async (req) => {
           error: 'Incomplete submission',
           missing: validation.missingFields
         }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -175,12 +179,12 @@ serve(async (req) => {
       url: `${Deno.env.get('FRONTEND_URL')}/admin/pages`
     });
 
-    // Send email to admin (via send-email function)
+    // Send email to admin (via send-email function using service role key)
     await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`
+        'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`
       },
       body: JSON.stringify({
         type: 'new_draft_page',
@@ -198,15 +202,15 @@ serve(async (req) => {
         slug,
         message: 'Landing page created as draft. Check admin panel to publish.'
       }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('Error:', error);
 
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: 'Internal server error' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
@@ -242,6 +246,11 @@ function generateSlug(companyName: string, jobTitle: string): string {
 }
 
 async function sendSlackNotification(data: any) {
+  if (!SLACK_WEBHOOK) {
+    console.log('Slack webhook not configured, skipping notification');
+    return;
+  }
+
   try {
     let message = '';
 

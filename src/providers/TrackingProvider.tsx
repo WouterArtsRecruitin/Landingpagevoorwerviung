@@ -195,10 +195,20 @@ export function TrackingProvider({
   );
 }
 
+const noopTracking: TrackingContextValue = {
+  sessionId: null,
+  variantId: null,
+  utmParams: {},
+  consentGiven: { analytics: false, marketing: false },
+  trackEvent: () => {},
+  trackCTAClick: () => {},
+  trackScrollDepth: () => {},
+  trackSectionView: () => {},
+  trackFormSubmit: () => {},
+};
+
 export function useTracking(): TrackingContextValue {
   const context = useContext(TrackingContext);
-  if (!context) {
-    throw new Error("useTracking must be used within a TrackingProvider");
-  }
-  return context;
+  // Return no-op tracking when used outside TrackingProvider (before consent decided)
+  return context ?? noopTracking;
 }

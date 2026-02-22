@@ -8,8 +8,10 @@ export interface IntakeFormData {
   company_name: string;
   company_website: string;
   company_logo_url: string;
+  company_logo_file?: File | null;
   company_sector: string;
   primary_color: string;
+  secondary_color: string;
   template_style?: string;
   image_style?: string;
   calendly_url?: string;
@@ -21,6 +23,8 @@ export interface IntakeFormData {
   salary_max: number | null;
   employment_type: "fulltime" | "parttime" | "flex" | "interim" | "stage";
   job_description: string;
+  vacancy_text_url: string;
+  vacancy_text_file?: File | null;
 
   // Stap 3: Details
   responsibilities: string[];

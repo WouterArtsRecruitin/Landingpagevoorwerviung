@@ -59,7 +59,10 @@ async function findOrCreateOrganization(form: IntakeFormData): Promise<string> {
       website_url: form.company_website || "",
       contact_email: form.contact_email || "",
       contact_phone: form.contact_phone || "",
-      brand_colors: { primary: form.primary_color || "#003DA5" },
+      brand_colors: {
+        primary: form.primary_color || "#003DA5",
+        secondary: form.secondary_color || "#FFFFFF",
+      },
     })
     .select("id")
     .single();
@@ -281,11 +284,14 @@ function generateTheme(form: IntakeFormData) {
   if (form.template_style && form.template_style !== "auto" && COLOR_THEMES[form.template_style]) {
     theme = COLOR_THEMES[form.template_style];
   } else if (form.primary_color && form.primary_color !== "#003DA5") {
+    const sec = form.secondary_color && form.secondary_color !== "#FFFFFF"
+      ? form.secondary_color
+      : form.primary_color;
     theme = {
       primary: form.primary_color,
-      secondary: form.primary_color,
-      accent: form.primary_color,
-      gradient: `linear-gradient(135deg, ${form.primary_color} 0%, ${form.primary_color}dd 100%)`,
+      secondary: sec,
+      accent: sec,
+      gradient: `linear-gradient(135deg, ${form.primary_color} 0%, ${sec}dd 100%)`,
     };
   } else if (form.company_sector) {
     const key = SECTOR_THEME_MAP[form.company_sector] || "default";
@@ -339,9 +345,11 @@ export async function generateLandingPageClientSide(
         company_logo_url: form.company_logo_url,
         company_sector: form.company_sector,
         primary_color: form.primary_color,
+        secondary_color: form.secondary_color || "#FFFFFF",
         template_style: form.template_style || "auto",
         image_style: form.image_style || "photos",
         calendly_url: form.calendly_url || null,
+        vacancy_text_url: form.vacancy_text_url || null,
         job_title: form.job_title,
         job_location: form.job_location,
         salary_min: form.salary_min,
@@ -412,6 +420,7 @@ export async function generateLandingPageClientSide(
         contact_whatsapp_url: form.contact_whatsapp
           ? `https://wa.me/${form.contact_whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hoi, ik heb interesse in de ${form.job_title} vacature bij ${form.company_name}!`)}`
           : null,
+        contact_calendly_url: form.calendly_url || null,
       })
       .select("id")
       .single();

@@ -1,7 +1,21 @@
 import { Resend } from 'resend';
 
 // Initialize Resend (get API key from https://resend.com/api-keys)
-const resend = new Resend(import.meta.env.VITE_RESEND_API_KEY || 'your-api-key-here');
+const apiKey = import.meta.env.VITE_RESEND_API_KEY;
+if (!apiKey) {
+  console.warn("VITE_RESEND_API_KEY not configured. Email sending will fail.");
+}
+const resend = new Resend(apiKey || '');
+
+function escapeHtml(str: string | undefined | null): string {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 export interface ApprovalEmailData {
   clientEmail: string;
@@ -12,6 +26,11 @@ export interface ApprovalEmailData {
 }
 
 export async function sendApprovalEmail(data: ApprovalEmailData) {
+  const clientName = escapeHtml(data.clientName);
+  const jobTitle = escapeHtml(data.jobTitle);
+  const companyName = escapeHtml(data.companyName);
+  const approvalUrl = escapeHtml(data.approvalUrl);
+
   try {
     await resend.emails.send({
       from: 'Wouter @ Kandidatentekort <wouter@kandidatentekort.nl>',
@@ -39,9 +58,9 @@ export async function sendApprovalEmail(data: ApprovalEmailData) {
               </div>
 
               <div class="content">
-                <p>Hoi ${data.clientName},</p>
+                <p>Hoi ${clientName},</p>
 
-                <p>Goed nieuws! Je vacaturepagina voor <strong>${data.jobTitle}</strong> bij <strong>${data.companyName}</strong> is gemaakt en klaar voor review.</p>
+                <p>Goed nieuws! Je vacaturepagina voor <strong>${jobTitle}</strong> bij <strong>${companyName}</strong> is gemaakt en klaar voor review.</p>
 
                 <div class="highlight">
                   <strong>📋 Wat kun je doen:</strong>
@@ -53,7 +72,7 @@ export async function sendApprovalEmail(data: ApprovalEmailData) {
                 </div>
 
                 <div style="text-align: center;">
-                  <a href="${data.approvalUrl}" class="button">
+                  <a href="${approvalUrl}" class="button">
                     👉 Bekijk & Approve Pagina
                   </a>
                 </div>
@@ -94,6 +113,10 @@ export interface ApprovedEmailData {
 }
 
 export async function sendApprovedEmail(data: ApprovedEmailData) {
+  const clientName = escapeHtml(data.clientName);
+  const jobTitle = escapeHtml(data.jobTitle);
+  const liveUrl = escapeHtml(data.liveUrl);
+
   try {
     await resend.emails.send({
       from: 'Wouter @ Kandidatentekort <wouter@kandidatentekort.nl>',
@@ -120,13 +143,13 @@ export async function sendApprovedEmail(data: ApprovedEmailData) {
               </div>
 
               <div class="content">
-                <p>Hoi ${data.clientName},</p>
+                <p>Hoi ${clientName},</p>
 
-                <p>Je vacaturepagina voor <strong>${data.jobTitle}</strong> is nu live! 🚀</p>
+                <p>Je vacaturepagina voor <strong>${jobTitle}</strong> is nu live! 🚀</p>
 
                 <div style="text-align: center; background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
                   <p style="margin: 0 0 10px; font-weight: 600;">🔗 Live URL:</p>
-                  <a href="${data.liveUrl}" style="color: #0066cc; word-break: break-all;">${data.liveUrl}</a>
+                  <a href="${liveUrl}" style="color: #0066cc; word-break: break-all;">${liveUrl}</a>
                 </div>
 
                 <p><strong>Wat nu:</strong></p>

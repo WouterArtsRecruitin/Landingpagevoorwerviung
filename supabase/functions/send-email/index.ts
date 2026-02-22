@@ -1,6 +1,39 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? '';
+const INTERNAL_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+// Sanitize user input for safe HTML template interpolation
+function escapeHtml(str: string | undefined | null): string {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// Validate email format
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// Validate URL format
+function isValidUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 interface EmailRequest {
   type: 'new_draft_page' | 'candidate_confirmation' | 'recruiter_notification' | 'candidate_followup_day3' | 'candidate_followup_day7';
@@ -23,8 +56,46 @@ interface EmailRequest {
 }
 
 serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
   try {
+    // Verify the request is from an authorized source (internal service call)
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Accept both service role key (internal) and valid user tokens
+    const token = authHeader.replace('Bearer ', '');
+    if (token !== INTERNAL_SERVICE_KEY) {
+      const supabase = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+        { global: { headers: { Authorization: authHeader } } }
+      );
+      const { error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        return new Response(
+          JSON.stringify({ error: 'Unauthorized' }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
     const emailData: EmailRequest = await req.json();
+
+    // Validate recipient email
+    if (!emailData.to || !isValidEmail(emailData.to)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or missing recipient email' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     let emailHtml = '';
     let emailSubject = '';
@@ -85,20 +156,25 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ success: true, email_id: result.id }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('Error sending email:', error);
 
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: 'Failed to send email' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
 
 function generateNewDraftEmail(data: EmailRequest): string {
+  const companyName = escapeHtml(data.company_name);
+  const pageTitle = escapeHtml(data.page_title);
+  const slug = escapeHtml(data.slug);
+  const frontendUrl = escapeHtml(Deno.env.get('FRONTEND_URL'));
+
   return `
 <!DOCTYPE html>
 <html>
@@ -117,13 +193,13 @@ function generateNewDraftEmail(data: EmailRequest): string {
     </p>
 
     <p style="font-size: 16px; margin-bottom: 20px;">
-      De vacaturepagina voor <strong>${data.company_name}</strong> is automatisch aangemaakt en staat klaar voor review:
+      De vacaturepagina voor <strong>${companyName}</strong> is automatisch aangemaakt en staat klaar voor review:
     </p>
 
     <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea;">
-      <h2 style="margin-top: 0; color: #667eea;">${data.page_title}</h2>
-      <p style="margin: 5px 0;"><strong>Bedrijf:</strong> ${data.company_name}</p>
-      <p style="margin: 5px 0;"><strong>Slug:</strong> /v/${data.slug}</p>
+      <h2 style="margin-top: 0; color: #667eea;">${pageTitle}</h2>
+      <p style="margin: 5px 0;"><strong>Bedrijf:</strong> ${companyName}</p>
+      <p style="margin: 5px 0;"><strong>Slug:</strong> /v/${slug}</p>
       <p style="margin: 5px 0;"><strong>Status:</strong> <span style="background: #fbbf24; color: #78350f; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">DRAFT</span></p>
     </div>
 
@@ -132,14 +208,14 @@ function generateNewDraftEmail(data: EmailRequest): string {
     </p>
 
     <div style="text-align: center; margin: 30px 0;">
-      <a href="${Deno.env.get('FRONTEND_URL')}/admin/pages" style="display: inline-block; background: #667eea; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+      <a href="${frontendUrl}/admin/pages" style="display: inline-block; background: #667eea; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
         Bekijk in Admin Dashboard →
       </a>
     </div>
 
     <p style="font-size: 14px; color: #666; margin-top: 30px;">
       Na publicatie is de pagina live op:<br>
-      <strong>${Deno.env.get('FRONTEND_URL')}/v/${data.slug}</strong>
+      <strong>${frontendUrl}/v/${slug}</strong>
     </p>
   </div>
 
@@ -152,6 +228,10 @@ function generateNewDraftEmail(data: EmailRequest): string {
 }
 
 function generateCandidateConfirmationEmail(data: EmailRequest): string {
+  const candidateName = escapeHtml(data.candidate_name);
+  const jobTitle = escapeHtml(data.job_title);
+  const jobUrl = data.job_url && isValidUrl(data.job_url) ? escapeHtml(data.job_url) : '#';
+
   return `
 <!DOCTYPE html>
 <html>
@@ -166,11 +246,11 @@ function generateCandidateConfirmationEmail(data: EmailRequest): string {
 
   <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
     <p style="font-size: 16px; margin-bottom: 20px;">
-      Hoi ${data.candidate_name},
+      Hoi ${candidateName},
     </p>
 
     <p style="font-size: 16px; margin-bottom: 20px;">
-      Bedankt voor je sollicitatie op de functie <strong>${data.job_title}</strong>!
+      Bedankt voor je sollicitatie op de functie <strong>${jobTitle}</strong>!
     </p>
 
     <p style="font-size: 16px; margin-bottom: 20px;">
@@ -189,7 +269,7 @@ function generateCandidateConfirmationEmail(data: EmailRequest): string {
     </p>
 
     <div style="text-align: center; margin: 30px 0;">
-      <a href="${data.job_url}" style="display: inline-block; background: #10b981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+      <a href="${jobUrl}" style="display: inline-block; background: #10b981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
         Bekijk Vacature →
       </a>
     </div>
@@ -209,6 +289,15 @@ function generateCandidateConfirmationEmail(data: EmailRequest): string {
 }
 
 function generateRecruiterNotificationEmail(data: EmailRequest): string {
+  const jobTitle = escapeHtml(data.job_title);
+  const applicantName = escapeHtml(data.applicant_name);
+  const applicantEmail = escapeHtml(data.applicant_email);
+  const applicantPhone = escapeHtml(data.applicant_phone);
+  const linkedinUrl = data.linkedin_url && isValidUrl(data.linkedin_url) ? escapeHtml(data.linkedin_url) : '';
+  const cvUrl = data.cv_url && isValidUrl(data.cv_url) ? escapeHtml(data.cv_url) : '';
+  const motivation = escapeHtml(data.motivation);
+  const frontendUrl = escapeHtml(Deno.env.get('FRONTEND_URL'));
+
   return `
 <!DOCTYPE html>
 <html>
@@ -227,31 +316,31 @@ function generateRecruiterNotificationEmail(data: EmailRequest): string {
     </p>
 
     <div style="background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #3b82f6;">
-      <h2 style="margin-top: 0; color: #3b82f6; font-size: 20px;">${data.job_title}</h2>
+      <h2 style="margin-top: 0; color: #3b82f6; font-size: 20px;">${jobTitle}</h2>
 
       <div style="margin: 15px 0; padding: 15px; background: #f0f9ff; border-radius: 6px;">
-        <p style="margin: 5px 0;"><strong>Kandidaat:</strong> ${data.applicant_name}</p>
-        <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:${data.applicant_email}" style="color: #3b82f6;">${data.applicant_email}</a></p>
-        ${data.applicant_phone ? `<p style="margin: 5px 0;"><strong>Telefoon:</strong> <a href="tel:${data.applicant_phone}" style="color: #3b82f6;">${data.applicant_phone}</a></p>` : ''}
-        ${data.linkedin_url ? `<p style="margin: 5px 0;"><strong>LinkedIn:</strong> <a href="${data.linkedin_url}" style="color: #3b82f6;" target="_blank">Bekijk Profiel →</a></p>` : ''}
+        <p style="margin: 5px 0;"><strong>Kandidaat:</strong> ${applicantName}</p>
+        <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:${applicantEmail}" style="color: #3b82f6;">${applicantEmail}</a></p>
+        ${applicantPhone ? `<p style="margin: 5px 0;"><strong>Telefoon:</strong> <a href="tel:${applicantPhone}" style="color: #3b82f6;">${applicantPhone}</a></p>` : ''}
+        ${linkedinUrl ? `<p style="margin: 5px 0;"><strong>LinkedIn:</strong> <a href="${linkedinUrl}" style="color: #3b82f6;" target="_blank">Bekijk Profiel →</a></p>` : ''}
       </div>
 
-      ${data.motivation ? `
+      ${motivation ? `
       <div style="margin: 15px 0;">
         <strong style="display: block; margin-bottom: 8px; color: #333;">Motivatie:</strong>
         <p style="background: #fef3c7; padding: 15px; border-radius: 6px; margin: 0; font-style: italic; color: #78350f; border-left: 3px solid #fbbf24;">
-          "${data.motivation}"
+          "${motivation}"
         </p>
       </div>
       ` : ''}
     </div>
 
     <div style="text-align: center; margin: 30px 0;">
-      <a href="${Deno.env.get('FRONTEND_URL')}/admin/candidates" style="display: inline-block; background: #3b82f6; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-right: 10px;">
+      <a href="${frontendUrl}/admin/candidates" style="display: inline-block; background: #3b82f6; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-right: 10px;">
         Bekijk in Admin →
       </a>
-      ${data.cv_url ? `
-      <a href="${data.cv_url}" style="display: inline-block; background: white; color: #3b82f6; border: 2px solid #3b82f6; padding: 12px 26px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+      ${cvUrl ? `
+      <a href="${cvUrl}" style="display: inline-block; background: white; color: #3b82f6; border: 2px solid #3b82f6; padding: 12px 26px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
         Download CV
       </a>
       ` : ''}
@@ -271,6 +360,10 @@ function generateRecruiterNotificationEmail(data: EmailRequest): string {
 }
 
 function generateFollowupDay3Email(data: EmailRequest): string {
+  const candidateName = escapeHtml(data.candidate_name);
+  const jobTitle = escapeHtml(data.job_title);
+  const jobUrl = data.job_url && isValidUrl(data.job_url) ? escapeHtml(data.job_url) : '#';
+
   return `
 <!DOCTYPE html>
 <html>
@@ -285,11 +378,11 @@ function generateFollowupDay3Email(data: EmailRequest): string {
 
   <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
     <p style="font-size: 16px; margin-bottom: 20px;">
-      Hoi ${data.candidate_name},
+      Hoi ${candidateName},
     </p>
 
     <p style="font-size: 16px; margin-bottom: 20px;">
-      We wilden je even laten weten dat we je sollicitatie voor <strong>${data.job_title}</strong> zorgvuldig aan het beoordelen zijn.
+      We wilden je even laten weten dat we je sollicitatie voor <strong>${jobTitle}</strong> zorgvuldig aan het beoordelen zijn.
     </p>
 
     <div style="background: white; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #8b5cf6;">
@@ -304,7 +397,7 @@ function generateFollowupDay3Email(data: EmailRequest): string {
     </p>
 
     <div style="text-align: center; margin: 30px 0;">
-      <a href="${data.job_url}" style="display: inline-block; background: #8b5cf6; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+      <a href="${jobUrl}" style="display: inline-block; background: #8b5cf6; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
         Bekijk Vacature →
       </a>
     </div>
@@ -324,6 +417,10 @@ function generateFollowupDay3Email(data: EmailRequest): string {
 }
 
 function generateFollowupDay7Email(data: EmailRequest): string {
+  const candidateName = escapeHtml(data.candidate_name);
+  const jobTitle = escapeHtml(data.job_title);
+  const jobUrl = data.job_url && isValidUrl(data.job_url) ? escapeHtml(data.job_url) : '#';
+
   return `
 <!DOCTYPE html>
 <html>
@@ -338,11 +435,11 @@ function generateFollowupDay7Email(data: EmailRequest): string {
 
   <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
     <p style="font-size: 16px; margin-bottom: 20px;">
-      Hoi ${data.candidate_name},
+      Hoi ${candidateName},
     </p>
 
     <p style="font-size: 16px; margin-bottom: 20px;">
-      Een weekje geleden solliciteerde je op de functie <strong>${data.job_title}</strong>.
+      Een weekje geleden solliciteerde je op de functie <strong>${jobTitle}</strong>.
     </p>
 
     <p style="font-size: 16px; margin-bottom: 20px;">
@@ -359,7 +456,7 @@ function generateFollowupDay7Email(data: EmailRequest): string {
     </div>
 
     <div style="text-align: center; margin: 30px 0;">
-      <a href="${data.job_url}#apply" style="display: inline-block; background: #f59e0b; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-bottom: 10px;">
+      <a href="${jobUrl}#apply" style="display: inline-block; background: #f59e0b; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-bottom: 10px;">
         📅 Plan een Gesprek
       </a>
     </div>

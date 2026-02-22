@@ -3,6 +3,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { hmac } from "https://deno.land/x/hmac@v2.0.1/mod.ts";
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") || "";
 const STRIPE_WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") || "";
@@ -14,6 +15,41 @@ const PLAN_LIMITS: Record<string, number> = {
   enterprise: -1,
 };
 
+function verifyStripeSignature(
+  body: string,
+  signatureHeader: string,
+  secret: string,
+  toleranceSeconds = 300
+): boolean {
+  const elements = signatureHeader.split(",");
+  const params: Record<string, string> = {};
+  for (const element of elements) {
+    const [key, value] = element.split("=");
+    params[key.trim()] = value;
+  }
+
+  const timestamp = params["t"];
+  const signature = params["v1"];
+
+  if (!timestamp || !signature) return false;
+
+  // Check timestamp tolerance (prevent replay attacks)
+  const now = Math.floor(Date.now() / 1000);
+  if (Math.abs(now - parseInt(timestamp)) > toleranceSeconds) return false;
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${body}`;
+  const expectedSignature = hmac("sha256", secret, signedPayload, "utf8", "hex");
+
+  // Constant-time comparison
+  if (signature.length !== expectedSignature.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < signature.length; i++) {
+    mismatch |= signature.charCodeAt(i) ^ expectedSignature.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
 serve(async (req) => {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
@@ -22,8 +58,22 @@ serve(async (req) => {
   try {
     const body = await req.text();
 
-    // In production, verify webhook signature
-    // For now, parse the event directly
+    // Verify Stripe webhook signature
+    const signatureHeader = req.headers.get("stripe-signature");
+    if (!signatureHeader || !STRIPE_WEBHOOK_SECRET) {
+      return new Response(JSON.stringify({ error: "Missing signature or webhook secret" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (!verifyStripeSignature(body, signatureHeader, STRIPE_WEBHOOK_SECRET)) {
+      return new Response(JSON.stringify({ error: "Invalid signature" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const event = JSON.parse(body);
 
     const supabase = createClient(
