@@ -4,10 +4,19 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const SLACK_WEBHOOK = Deno.env.get('SLACK_WEBHOOK_URL') ?? '';
 const JOTFORM_API_KEY = Deno.env.get('JOTFORM_API_KEY') ?? '';
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Get CORS headers with origin validation
+function getCorsHeaders(origin?: string): Record<string, string> {
+  const allowedOrigins = (Deno.env.get("ALLOWED_ORIGINS") || "http://localhost:3000,http://localhost:5173").split(',').map(o => o.trim());
+  const isAllowed = origin && allowedOrigins.includes(origin);
+
+  return {
+    "Access-Control-Allow-Origin": isAllowed ? origin : "",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "X-RateLimit-Remaining": "99",
+    "X-RateLimit-Reset": Math.floor(Date.now() / 1000 + 3600).toString(),
+  };
+}
 
 interface JotformSubmission {
   // Bedrijfsinfo
@@ -43,7 +52,13 @@ interface JotformSubmission {
 }
 
 serve(async (req) => {
+  const origin = req.headers.get("origin");
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
+    if (!corsHeaders["Access-Control-Allow-Origin"]) {
+      return new Response("CORS policy violation", { status: 403 });
+    }
     return new Response("ok", { headers: corsHeaders });
   }
 

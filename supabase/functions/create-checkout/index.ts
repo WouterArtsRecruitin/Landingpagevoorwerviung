@@ -13,14 +13,28 @@ const PRICE_MAP: Record<string, string> = {
   enterprise: Deno.env.get("STRIPE_PRICE_ENTERPRISE") || "",
 };
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+// Get CORS headers with origin validation
+function getCorsHeaders(origin?: string): Record<string, string> {
+  const allowedOrigins = (Deno.env.get("ALLOWED_ORIGINS") || "http://localhost:3000,http://localhost:5173").split(',').map(o => o.trim());
+  const isAllowed = origin && allowedOrigins.includes(origin);
+
+  return {
+    "Access-Control-Allow-Origin": isAllowed ? origin : "",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "X-RateLimit-Remaining": "99",
+    "X-RateLimit-Reset": Math.floor(Date.now() / 1000 + 3600).toString(),
+  };
+}
 
 serve(async (req) => {
+  const origin = req.headers.get("origin");
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
+    if (!corsHeaders["Access-Control-Allow-Origin"]) {
+      return new Response("CORS policy violation", { status: 403 });
+    }
     return new Response("ok", { headers: corsHeaders });
   }
 
@@ -116,7 +130,8 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: (err as Error).message }), {
+    console.error("Checkout error:", err);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

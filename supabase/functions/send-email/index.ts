@@ -4,10 +4,19 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? '';
 const INTERNAL_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Get CORS headers with origin validation
+function getCorsHeaders(origin?: string): Record<string, string> {
+  const allowedOrigins = (Deno.env.get("ALLOWED_ORIGINS") || "http://localhost:3000,http://localhost:5173").split(',').map(o => o.trim());
+  const isAllowed = origin && allowedOrigins.includes(origin);
+
+  return {
+    "Access-Control-Allow-Origin": isAllowed ? origin : "",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "X-RateLimit-Remaining": "99",
+    "X-RateLimit-Reset": Math.floor(Date.now() / 1000 + 3600).toString(),
+  };
+}
 
 // Sanitize user input for safe HTML template interpolation
 function escapeHtml(str: string | undefined | null): string {
@@ -56,7 +65,13 @@ interface EmailRequest {
 }
 
 serve(async (req) => {
+  const origin = req.headers.get("origin");
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
+    if (!corsHeaders["Access-Control-Allow-Origin"]) {
+      return new Response("CORS policy violation", { status: 403 });
+    }
     return new Response("ok", { headers: corsHeaders });
   }
 
@@ -163,7 +178,7 @@ serve(async (req) => {
     console.error('Error sending email:', error);
 
     return new Response(
-      JSON.stringify({ error: 'Failed to send email' }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
